@@ -20,6 +20,11 @@ export default new Router({
           path: '/detail',
           name: "RoomDetail",
           component: () => import("@/components/Home/RoomDetail")
+        },
+        {
+          path: '/mine',
+          name: "MineDetail",
+          component: () => import("@/components/Mine/Detail")
         }]
     },
     {

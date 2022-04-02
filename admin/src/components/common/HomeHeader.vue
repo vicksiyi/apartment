@@ -12,14 +12,14 @@
       </div>
     </div>
     <!-- 未登录 -->
-    <div v-if="!isLogin && !isRegister" class="action">
+    <!-- <div v-if="!isLogin && !isRegister" class="action">
       <ul>
         <li>您好，请<a href="/login">登录</a></li>
         <li>免费<a href="/register">注册</a></li>
       </ul>
-    </div>
+    </div> -->
     <!-- 已经登录 -->
-    <!-- <div class="header-right">
+    <div v-if="!isLogin && !isRegister" class="header-right">
       <div class="avatar">
         <el-dropdown @command="selectAvatar">
           <el-avatar
@@ -32,7 +32,7 @@
           </el-dropdown-menu>
         </el-dropdown>
       </div>
-    </div> -->
+    </div>
   </div>
 </template>
 
@@ -53,10 +53,14 @@ export default {
     return {};
   },
   methods: {
-    selectAvatar() {},
-    toHome(){
-        this.$router.push("/");
-    }
+    selectAvatar(res) {
+      console.log(res === 0);
+      if (res === 0) this.$router.push({ path: "/mine" });
+      else if (res === 1) this.$router.push({ path: "/login" });
+    },
+    toHome() {
+      this.$router.push("/");
+    },
   },
 };
 </script>

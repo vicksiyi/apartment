@@ -5,7 +5,8 @@ import {
   Button, Select, Container, Header, Main, Footer, Link,
   Dropdown, DropdownMenu, DropdownItem, Avatar, Card, Row, Col,
   Pagination, Option, Carousel, CarouselItem, Form, FormItem, Input,
-  Radio
+  Radio, Tabs, TabPane, Descriptions, DescriptionsItem, Tag,
+  Timeline, TimelineItem, Switch, Table, TableColumn
 } from 'element-ui';
 Vue.config.productionTip = false
 Vue.use(Button)
@@ -30,6 +31,16 @@ Vue.use(Form)
 Vue.use(FormItem)
 Vue.use(Input)
 Vue.use(Radio)
+Vue.use(Tabs)
+Vue.use(TabPane)
+Vue.use(Descriptions)
+Vue.use(DescriptionsItem)
+Vue.use(Tag)
+Vue.use(Timeline)
+Vue.use(TimelineItem)
+Vue.use(Switch)
+Vue.use(Table)
+Vue.use(TableColumn)
 
 new Vue({
   el: '#app',

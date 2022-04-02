@@ -11,5 +11,5 @@ export default {
 </script>
 
 <style>
-
+@import url('./assets/css/init.css');
 </style>

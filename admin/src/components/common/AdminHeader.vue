@@ -23,8 +23,7 @@
             src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"
           ></el-avatar>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item :command="0">个人中心</el-dropdown-item>
-            <el-dropdown-item :command="1">退出登录</el-dropdown-item>
+            <el-dropdown-item :command="0">退出登录</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
       </div>
@@ -50,7 +49,7 @@ export default {
   },
   methods: {
     selectAvatar(res) {
-      console.log(res);
+      if (res === 0) this.$router.push({ path: "/login" });
     },
     handleMenu: function () {
       this.$store.commit("collapseMenu");

@@ -1,13 +1,14 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router'
+import store from './store/main';
 import {
   Button, Select, Container, Header, Main, Footer, Link,
   Dropdown, DropdownMenu, DropdownItem, Avatar, Card, Row, Col,
   Pagination, Option, Carousel, CarouselItem, Form, FormItem, Input,
   Radio, Tabs, TabPane, Descriptions, DescriptionsItem, Tag,
   Timeline, TimelineItem, Switch, Table, TableColumn, TimeSelect,
-  Notification
+  Notification, Aside,Menu,MenuItem,Submenu,MenuItemGroup
 } from 'element-ui';
 Vue.config.productionTip = false
 Vue.use(Button)
@@ -43,11 +44,17 @@ Vue.use(Switch)
 Vue.use(Table)
 Vue.use(TableColumn)
 Vue.use(TimeSelect)
+Vue.use(Aside)
+Vue.use(Menu)
+Vue.use(MenuItem)
+Vue.use(Submenu)
+Vue.use(MenuItemGroup)
 
 Vue.prototype.$notify = Notification;
 new Vue({
   el: '#app',
   router,
+  store,
   components: { App },
   template: '<App/>'
 })

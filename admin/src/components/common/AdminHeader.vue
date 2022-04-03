@@ -1,7 +1,12 @@
 <template>
   <div class="header">
     <div class="logo">
-      <img src="../assets/images/logo.png" alt="" srcset="" />
+      <img
+        @click="handleMenu"
+        src="../../assets/images/logo.png"
+        alt=""
+        srcset=""
+      />
       <div class="logo-righ">
         <div class="logo-first">
           <span>芒果公寓管理系统</span>
@@ -47,6 +52,9 @@ export default {
     selectAvatar(res) {
       console.log(res);
     },
+    handleMenu: function () {
+      this.$store.commit("collapseMenu");
+    },
   },
   mounted: function () {},
 };
@@ -65,16 +73,16 @@ export default {
   margin-left: 0px;
 }
 .logo img {
-  width: 40px;
-  height: 40px;
-  margin: 10px;
+  width: 80px;
+  height: 50px;
+  margin: 5px;
 }
 .logo .logo-righ {
   float: right;
   font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB",
     "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
   margin-top: 12px;
-  margin-left: 10px;
+  margin-left: -10px;
   color: #fff;
 }
 .logo .logo-righ .logo-first {

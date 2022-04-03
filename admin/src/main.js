@@ -8,9 +8,15 @@ import {
   Pagination, Option, Carousel, CarouselItem, Form, FormItem, Input,
   Radio, Tabs, TabPane, Descriptions, DescriptionsItem, Tag,
   Timeline, TimelineItem, Switch, Table, TableColumn, TimeSelect,
-  Notification, Aside,Menu,MenuItem,Submenu,MenuItemGroup
+  Notification, Aside, Menu, MenuItem, Submenu, MenuItemGroup,
+  Drawer, CheckboxGroup, Checkbox, Upload, Dialog,Popover
 } from 'element-ui';
 Vue.config.productionTip = false
+Vue.use(Popover)
+Vue.use(CheckboxGroup)
+Vue.use(Upload)
+Vue.use(Dialog)
+Vue.use(Checkbox)
 Vue.use(Button)
 Vue.use(Select)
 Vue.use(Container)
@@ -49,6 +55,7 @@ Vue.use(Menu)
 Vue.use(MenuItem)
 Vue.use(Submenu)
 Vue.use(MenuItemGroup)
+Vue.use(Drawer)
 
 Vue.prototype.$notify = Notification;
 new Vue({

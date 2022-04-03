@@ -6,7 +6,8 @@ import {
   Dropdown, DropdownMenu, DropdownItem, Avatar, Card, Row, Col,
   Pagination, Option, Carousel, CarouselItem, Form, FormItem, Input,
   Radio, Tabs, TabPane, Descriptions, DescriptionsItem, Tag,
-  Timeline, TimelineItem, Switch, Table, TableColumn
+  Timeline, TimelineItem, Switch, Table, TableColumn, TimeSelect,
+  Notification
 } from 'element-ui';
 Vue.config.productionTip = false
 Vue.use(Button)
@@ -41,7 +42,9 @@ Vue.use(TimelineItem)
 Vue.use(Switch)
 Vue.use(Table)
 Vue.use(TableColumn)
+Vue.use(TimeSelect)
 
+Vue.prototype.$notify = Notification;
 new Vue({
   el: '#app',
   router,

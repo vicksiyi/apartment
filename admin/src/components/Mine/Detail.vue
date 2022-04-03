@@ -22,6 +22,19 @@ export default {
   data() {
     return {};
   },
+  mounted() {
+    const h = this.$createElement;
+
+    this.$notify({
+      title: "标题名称",
+      message: h(
+        "i",
+        { style: "color: teal" },
+        "这是提示文案这是提示文案这是提示文案这是提示文案这是提示文案这是提示文案这是提示文案这是提示文案"
+      ),
+      duration: 0
+    });
+  },
 };
 </script>
 <style scoped>

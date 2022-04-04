@@ -10,7 +10,7 @@ import {
   Timeline, TimelineItem, Switch, Table, TableColumn, TimeSelect,
   Notification, Aside, Menu, MenuItem, Submenu, MenuItemGroup,
   Drawer, CheckboxGroup, Checkbox, Upload, Dialog, Popover, Loading,
-  Message,RadioGroup
+  Message, RadioGroup
 } from 'element-ui';
 Vue.config.productionTip = false
 Vue.prototype.$message = Message;

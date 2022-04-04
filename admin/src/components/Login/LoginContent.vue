@@ -13,19 +13,19 @@
             label-width="100px"
             class="demo-ruleForm"
           >
-            <el-form-item prop="account">
+            <el-form-item prop="mobile">
               <el-input
                 placeholder="请输入手机号"
                 type="text"
-                v-model="ruleForm.account"
+                v-model="ruleForm.mobile"
                 autocomplete="off"
               ></el-input>
             </el-form-item>
-            <el-form-item prop="password">
+            <el-form-item prop="passwd">
               <el-input
                 placeholder="密码"
                 type="password"
-                v-model="ruleForm.password"
+                v-model="ruleForm.passwd"
                 autocomplete="off"
               ></el-input>
             </el-form-item>
@@ -76,48 +76,45 @@
 </template>
 
 <script>
+import md5 from "js-md5";
+import { loginRuleForm, loginRules } from "@/utils/rules";
+import { toJson } from "@/utils/switch";
+import { login } from "@/api/auth/index";
+import { mapActions } from "vuex";
+import form from "@/utils/form";
+import loading from "@/utils/loading";
 export default {
   name: "LoginContent",
   data() {
-    var validateAccount = (rule, value, callback) => {
-      if (value === "") {
-        callback(new Error("请输入账号"));
-      } else {
-        callback();
-      }
-    };
-    var validatePass = (rule, value, callback) => {
-      if (value === "") {
-        callback(new Error("请输入密码"));
-      } else {
-        callback();
-      }
-    };
-    var validateIdentity = (rule, value, callback) => {
-      if (value === -1) {
-        callback(new Error("请选择身份"));
-      } else {
-        callback();
-      }
-    };
     return {
       radio: "1",
-      ruleForm: {
-        account: "",
-        password: "",
-        identity: 0,
-      },
-      rules: {
-        password: [{ validator: validatePass, trigger: "blur" }],
-        account: [{ validator: validateAccount, trigger: "blur" }],
-        identity: [{ validator: validateIdentity, trigger: "blur" }],
-      },
+      ruleForm: toJson(loginRuleForm),
+      rules: toJson(loginRules),
     };
   },
   methods: {
     submitForm(formName) {
-      this.$refs[formName].validate((valid) => {
+      form.validate(this, formName).then(async (valid) => {
         if (valid) {
+          let _loadding = loading.start(this);
+          let data = Object.assign({}, this.ruleForm);
+          data.passwd = md5(data.passwd);
+          let _result = (await login({ data: data })).data;
+          if (_result.code != 200) this.$message.error(_result.msg);
+          else {
+            // 存储token
+            this.$store.commit("header/setToken", _result.token);
+            this.$message({
+              type: "success",
+              message: "登录成功",
+            });
+            if (data.identity == 1) {
+              this.$router.push("/admin");
+            } else {
+              this.$router.push("/");
+            }
+          }
+          loading.end(_loadding);
         } else {
           console.log("error submit!!");
           return false;

@@ -86,7 +86,7 @@ router.post('/login', async (req, res) => {
     if (identity === undefined) identity = 0;
     if (!(/^1[3456789]\d{9}$/.test(mobile))) {
         res.send({
-            status: "0001",
+            code: 400,
             msg: "手机号格式错误"
         });
         return;
@@ -103,7 +103,7 @@ router.post('/login', async (req, res) => {
             res.send({ code: 400, msg: "未知错误" })
             throw Error(err);
         });
-        res.send({ code: 200, token: _token });
+        res.send({ code: 200, token: `Bearer ${_token}` });
     } else if (_result.length !== 0) {
         res.json({ code: 400, msg: '密码错误' })
     } else {

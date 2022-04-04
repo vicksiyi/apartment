@@ -94,13 +94,13 @@
                     size="medium"
                     >用户</el-radio
                   >
-                  <el-radio
+                  <!-- <el-radio
                     v-model="ruleForm.identity"
                     label="1"
                     border
                     size="medium"
                     >管理员</el-radio
-                  >
+                  > -->
                 </div>
               </el-form-item>
             </div>

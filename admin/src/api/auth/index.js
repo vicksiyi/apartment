@@ -7,3 +7,12 @@ export const isauth = function (parms) {
         params: parms
     })
 }
+
+
+export const login = function (parms) {
+    return axios.request({
+        url: '/api/auth/login',
+        method: "post",
+        data: parms.data
+    })
+}

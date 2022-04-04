@@ -9,9 +9,13 @@ import {
   Radio, Tabs, TabPane, Descriptions, DescriptionsItem, Tag,
   Timeline, TimelineItem, Switch, Table, TableColumn, TimeSelect,
   Notification, Aside, Menu, MenuItem, Submenu, MenuItemGroup,
-  Drawer, CheckboxGroup, Checkbox, Upload, Dialog,Popover
+  Drawer, CheckboxGroup, Checkbox, Upload, Dialog, Popover, Loading,
+  Message
 } from 'element-ui';
 Vue.config.productionTip = false
+Vue.prototype.$message = Message;
+Vue.prototype.$notify = Notification;
+Vue.prototype.$loading = Loading.service;
 Vue.use(Popover)
 Vue.use(CheckboxGroup)
 Vue.use(Upload)
@@ -56,8 +60,6 @@ Vue.use(MenuItem)
 Vue.use(Submenu)
 Vue.use(MenuItemGroup)
 Vue.use(Drawer)
-
-Vue.prototype.$notify = Notification;
 new Vue({
   el: '#app',
   router,

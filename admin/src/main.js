@@ -16,6 +16,7 @@ Vue.config.productionTip = false
 Vue.prototype.$message = Message;
 Vue.prototype.$notify = Notification;
 Vue.prototype.$loading = Loading.service;
+Vue.use(Loading.directive);
 Vue.use(Popover)
 Vue.use(CheckboxGroup)
 Vue.use(Upload)

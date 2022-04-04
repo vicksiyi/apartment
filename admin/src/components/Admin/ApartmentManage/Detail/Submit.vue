@@ -7,61 +7,64 @@
       label-width="100px"
       class="demo-ruleForm"
     >
-      <el-form-item label="公寓名称" prop="title" required>
-        <el-input placeholder="请输入公寓名称" v-model="ruleForm.title"></el-input>
+      <el-form-item label="公寓名称" prop="title">
+        <el-input
+          placeholder="请输入公寓名称"
+          v-model="ruleForm.title"
+        ></el-input>
       </el-form-item>
-      <el-form-item label="价格区间" required>
+      <el-form-item label="价格区间">
         <el-col :span="11">
-          <el-form-item prop="moneyStart">
-            <el-input placeholder="起始价格" type="number" v-model="ruleForm.moneyStart"></el-input>
+          <el-form-item prop="startMoney">
+            <el-input
+              placeholder="起始价格"
+              type="number"
+              v-model="ruleForm.startMoney"
+            ></el-input>
           </el-form-item>
         </el-col>
         <el-col class="line" :span="2">-</el-col>
         <el-col :span="11">
-          <el-form-item prop="moneyEnd">
-            <el-input placeholder="结尾价格" type="number" v-model="ruleForm.moneyEnd"></el-input>
+          <el-form-item prop="endMoney">
+            <el-input
+              placeholder="结尾价格"
+              type="number"
+              v-model="ruleForm.endMoney"
+            ></el-input>
           </el-form-item>
         </el-col>
       </el-form-item>
-      <el-form-item label="联系电话" prop="mobile" required>
-        <el-input placeholder="请输入联系电话" v-model="ruleForm.mobile"></el-input>
+      <el-form-item label="联系电话" prop="mobile">
+        <el-input
+          placeholder="请输入联系电话"
+          v-model="ruleForm.mobile"
+        ></el-input>
       </el-form-item>
-      <el-form-item label="公寓地址" prop="address" required>
-        <el-input placeholder="请输入公寓地址" v-model="ruleForm.address"></el-input>
+      <el-form-item label="公寓地址" prop="address">
+        <el-input
+          placeholder="请输入公寓地址"
+          v-model="ruleForm.address"
+        ></el-input>
       </el-form-item>
-      <el-form-item label="配套设施" prop="type">
-        <el-checkbox-group v-model="ruleForm.type">
-          <el-checkbox label="免费WiFi" name="type"></el-checkbox>
-          <el-checkbox label="热水" name="type"></el-checkbox>
-          <el-checkbox label="免费WiFi" name="type"></el-checkbox>
-          <el-checkbox label="热水" name="type"></el-checkbox>
-          <el-checkbox label="免费WiFi" name="type"></el-checkbox>
-          <el-checkbox label="热水" name="type"></el-checkbox>
-          <el-checkbox label="免费WiFi" name="type"></el-checkbox>
-          <el-checkbox label="热水" name="type"></el-checkbox>
-          <el-checkbox label="免费WiFi" name="type"></el-checkbox>
-          <el-checkbox label="热水" name="type"></el-checkbox>
-          <el-checkbox label="免费WiFi" name="type"></el-checkbox>
-          <el-checkbox label="热水" name="type"></el-checkbox>
-          <el-checkbox label="免费WiFi" name="type"></el-checkbox>
-          <el-checkbox label="热水" name="type"></el-checkbox>
-          <el-checkbox label="免费WiFi" name="type"></el-checkbox>
-          <el-checkbox label="热水" name="type"></el-checkbox>
-          <el-checkbox label="免费WiFi" name="type"></el-checkbox>
-          <el-checkbox label="热水" name="type"></el-checkbox>
-          <el-checkbox label="免费WiFi" name="type"></el-checkbox>
-          <el-checkbox label="热水" name="type"></el-checkbox>
-          <el-checkbox label="免费WiFi" name="type"></el-checkbox>
-          <el-checkbox label="热水" name="type"></el-checkbox>
-          <el-checkbox label="免费WiFi" name="type"></el-checkbox>
-          <el-checkbox label="热水" name="type"></el-checkbox>
-        </el-checkbox-group>
+      <el-form-item label="公寓状态">
+        <el-radio-group v-model="ruleForm.status">
+          <el-radio
+            v-for="(item, index) in status"
+            :key="item"
+            :label="index"
+            >{{ item }}</el-radio
+          >
+        </el-radio-group>
       </el-form-item>
       <el-form-item label="公寓描述" prop="msg">
-        <el-input placeholder="公寓相关描述" type="textarea" v-model="ruleForm.msg"></el-input>
+        <el-input
+          placeholder="公寓相关描述"
+          type="textarea"
+          v-model="ruleForm.msg"
+        ></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" style="width:100%;" @click="add('ruleForm')"
+        <el-button type="primary" style="width: 100%" @click="add('ruleForm')"
           >立即添加</el-button
         >
       </el-form-item>
@@ -70,60 +73,59 @@
 </template>
 
 <script>
+import { roomRuleForm } from "@/utils/rules";
+import { toJson } from "@/utils/switch";
+import { addroom } from "@/api/room/index";
+import form from "@/utils/form";
+import loading from "@/utils/loading";
 export default {
   name: "Submit",
   data() {
+    const validateMoney = (rule, value, callback) => {
+      if (value < 0) {
+        callback(new Error("价格不可以小于0"));
+      } else if (value == "") {
+        callback(new Error("价格不能为空"));
+      } else callback();
+    };
     return {
-      ruleForm: {
-        name: "",
-        region: "",
-        date1: "",
-        date2: "",
-        delivery: false,
-        type: [],
-        resource: "",
-        desc: "",
-      },
+      status: ["未上架", "已上架"],
+      ruleForm: toJson(roomRuleForm),
       rules: {
-        name: [
-          { required: true, message: "请输入活动名称", trigger: "blur" },
-          { min: 3, max: 5, message: "长度在 3 到 5 个字符", trigger: "blur" },
+        title: [{ required: true, message: "请输入标题", trigger: "blur" }],
+        startMoney: [{ validator: validateMoney, trigger: "blur" }],
+        endMoney: [{ validator: validateMoney, trigger: "blur" }],
+        mobile: [
+          { required: true, message: "请输入联系方式", trigger: "blur" },
         ],
-        region: [
-          { required: true, message: "请选择活动区域", trigger: "change" },
+        msg: [{ required: true, message: "请输入房屋描述", trigger: "blur" }],
+        address: [
+          { required: true, message: "请输入房屋地址", trigger: "blur" },
         ],
-        date1: [
-          {
-            type: "date",
-            required: true,
-            message: "请选择日期",
-            trigger: "change",
-          },
-        ],
-        date2: [
-          {
-            type: "date",
-            required: true,
-            message: "请选择时间",
-            trigger: "change",
-          },
-        ],
-        type: [
-          {
-            type: "array",
-            required: true,
-            message: "请至少选择一个活动性质",
-            trigger: "change",
-          },
-        ],
-        resource: [
-          { required: true, message: "请选择活动资源", trigger: "change" },
-        ],
-        desc: [{ required: true, message: "请填写活动形式", trigger: "blur" }],
       },
     };
   },
-  methods: {},
+  methods: {
+    add(formName) {
+      form.validate(this, formName).then(async (valid) => {
+        if (valid) {
+          let _loading = loading.start(this);
+          let data = Object.assign({}, this.ruleForm);
+          let _result = (await addroom({ data: data })).data;
+          if (_result.code != 200) this.$message.error(_result.msg);
+          else {
+            this.$message({ type: "success", message: "添加成功" });
+            this.ruleForm = toJson(roomRuleForm);
+            this.$emit("closeDrawer");
+          }
+          loading.end(_loading);
+        } else {
+          console.log("error submit!!");
+          return false;
+        }
+      });
+    },
+  },
 };
 </script>
 

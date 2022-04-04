@@ -24,7 +24,6 @@
       :size="500"
       :visible.sync="drawer"
       :direction="direction"
-      :before-close="handleClose"
     >
       <Submit @closeDrawer="closeDrawer"></Submit>
     </el-drawer>

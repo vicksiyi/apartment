@@ -18,20 +18,31 @@ router.get('/user/getrooms', async (req, res) => {
 // @desc 获取公寓列表
 // @access private
 router.get('/getrooms', passport.authenticate('jwt', { session: false }), async (req, res) => {
-    if (req.user.identity != 1) res.send({ code: 401, msg: "没权限" });
+    if (req.user.identity != 1) res.status(401).send({ code: 401, msg: "没权限" });
     // 全部
-
+    let _result = await room.query_room().catch(err => {
+        res.send({ code: 400, msg: "未知错误" })
+        throw Error(err);
+    });
+    _result = utils.toJson(_result);
+    res.send({ code: 200, data: _result })
 })
 
 // $routes /room/addroom
 // @desc 添加公寓
 // @access private
 router.post('/addroom', passport.authenticate('jwt', { session: false }), async (req, res) => {
-    if (req.user.identity != 1) res.send({ code: 401, msg: "没权限" });
+    if (req.user.identity != 1) res.status(401).send({ code: 401, msg: "没权限" });
+    const { title, mobile, address, msg, startMoney, endMoney, status } = req.body;
+    let _result = await room.insert_room(title, mobile, address, msg, startMoney, endMoney, status).catch(err => {
+        res.send({ code: 400, msg: "未知错误" })
+        throw Error(err);
+    });
+    res.send({ code: 200 });
 })
 
 // $routes /room/adddevice
-// @desc 添加设备
+// @desc 添加房屋配套
 // @access private
 router.post('/adddevice', passport.authenticate('jwt', { session: false }), async (req, res) => {
     if (req.user.identity != 1) res.status(401).send({ code: 401, msg: "没权限" });
@@ -44,7 +55,7 @@ router.post('/adddevice', passport.authenticate('jwt', { session: false }), asyn
 })
 
 // $routes /room/getdevice
-// @desc 获取设备
+// @desc 获取房屋配套
 // @access private
 router.get('/getdevice', passport.authenticate('jwt', { session: false }), async (req, res) => {
     if (req.user.identity != 1) res.status(401).send({ code: 401, msg: "没权限" });

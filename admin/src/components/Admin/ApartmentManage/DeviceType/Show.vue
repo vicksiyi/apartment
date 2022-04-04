@@ -55,7 +55,6 @@ export default {
   data() {
     return {
       loading: false,
-      devices: [],
     };
   },
   methods: {
@@ -63,11 +62,11 @@ export default {
       this.loading = true;
       let _result = (await getdevice()).data;
       if (_result.code != 200) this.$message.error(_result.msg);
-      this.devices = _result.data.map((value) => {
+      const devices = _result.data.map((value) => {
         value.time = formatTimestamp(new Date(value.time).getTime());
         return value;
       });
-      this.$store.commit("device/updateDevices", this.devices);
+      this.$store.commit("device/updateDevices", devices);
       this.loading = false;
     },
   },

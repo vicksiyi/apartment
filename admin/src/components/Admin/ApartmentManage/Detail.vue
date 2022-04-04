@@ -8,49 +8,84 @@
       >
     </el-row>
     <el-row style="margin-top: 20px" :guter="20">
-      <Show @show="show" @showImage="showImage"></Show>
+      <Show
+        :update="update"
+        @showDevice="showDevice"
+        @show="show"
+        @showImage="showImage"
+      ></Show>
     </el-row>
     <div class="page">
-      <el-pagination background layout="prev, pager, next" :total="1000">
+      <el-pagination
+        background
+        layout="prev, pager, next"
+        :total="rooms.length"
+        @current-change="pageChange"
+      >
       </el-pagination>
     </div>
     <el-drawer
-      :title="isShowImage ? '图片' : isEdit ? '修改' : '添加'"
+      :title="
+        isShowImage ? '图片' : isEdit ? '修改' : isShowDevice ? '设备' : '添加'
+      "
       :size="600"
       :visible.sync="drawer"
       :direction="direction"
-      :before-close="handleClose"
     >
       <ShowImage v-if="isShowImage"></ShowImage>
-      <Submit v-else></Submit>
+      <ShowDevice v-else-if="isShowDevice"></ShowDevice>
+      <Submit @closeDrawer="closeDrawer" v-else></Submit>
     </el-drawer>
   </div>
 </template>
 
 <script>
+import { mapState } from "vuex";
 import Show from "./Detail/Show";
 import Submit from "./Detail/Submit";
 import ShowImage from "./Detail/ShowImage";
+import ShowDevice from "./Detail/ShowDevice";
 export default {
   name: "Detail",
-  components: { Show, Submit, ShowImage },
+  components: { Show, Submit, ShowImage, ShowDevice },
+  computed: {
+    ...mapState({
+      rooms: (state) => state.room.rooms,
+    }),
+  },
   data() {
     return {
       drawer: false,
       direction: "rtl",
       isEdit: false,
       isShowImage: false,
+      isShowDevice: false,
+      update: false,
     };
   },
   methods: {
     show(type) {
       this.drawer = true;
       this.isShowImage = false;
+      this.isShowDevice = false;
       this.isEdit = type;
     },
     showImage() {
       this.drawer = true;
       this.isShowImage = true;
+      this.isShowDevice = false;
+    },
+    showDevice() {
+      this.drawer = true;
+      this.isShowImage = false;
+      this.isShowDevice = true;
+    },
+    closeDrawer() {
+      this.drawer = false;
+      this.update = !this.update;
+    },
+    pageChange(page) {
+      this.$store.commit("room/updatePage", page);
     },
   },
 };

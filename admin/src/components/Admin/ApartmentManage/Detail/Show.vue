@@ -1,24 +1,37 @@
 <template>
   <div class="device-type">
-    <el-table :data="tableData" height="400" border style="width: 100%">
-      <el-table-column prop="date" label="日期"> </el-table-column>
+    <el-table
+      v-loading="loading"
+      :data="room"
+      height="400"
+      border
+      style="width: 100%"
+    >
+      <el-table-column sortable prop="time" label="日期"> </el-table-column>
       <el-table-column prop="title" label="名称"> </el-table-column>
       <el-table-column prop="mobile" label="联系"> </el-table-column>
       <el-table-column prop="address" label="地址"> </el-table-column>
       <el-table-column prop="images" label="图片" width="80">
         <el-button type="success" @click="show" size="mini">查看</el-button>
       </el-table-column>
-      <el-table-column prop="devices" label="配套设施">
-        <template slot-scope="scope">
+      <el-table-column prop="devices" label="配套设施" width="80">
+        <!-- <template slot-scope="scope">
           <el-tag
             v-for="item in scope.row.devices"
             :key="item"
             type="success"
             >{{ item }}</el-tag
           >
+        </template> -->
+        <el-button type="success" @click="showDevice" size="mini"
+          >查看</el-button
+        >
+      </el-table-column>
+      <el-table-column prop="money" label="价格">
+        <template slot-scope="scope">
+          {{ showMoney(scope.row.startMoney, scope.row.endMoney) }}
         </template>
       </el-table-column>
-      <el-table-column prop="money" label="价格"> </el-table-column>
       <el-table-column prop="msg" label="公寓描述" width="80">
         <template slot-scope="scope">
           <el-popover
@@ -27,7 +40,9 @@
             trigger="hover"
             :content="scope.row.msg"
           >
-            <el-button type="primary" size="mini" slot="reference">显示</el-button>
+            <el-button type="primary" size="mini" slot="reference"
+              >显示</el-button
+            >
           </el-popover>
         </template>
       </el-table-column>
@@ -42,73 +57,40 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
+import { getrooms } from "@/api/room/index";
+import { formatTimestamp } from "@/utils/format";
 export default {
   name: "Show",
+  props: {
+    update: {
+      type: Boolean,
+      default: false,
+    },
+  },
+  watch: {
+    update() {
+      this.getData();
+    },
+  },
+  computed: {
+    ...mapState({
+      rooms: (state) => state.room.rooms,
+      page: (state) => state.room.page,
+    }),
+    room() {
+      let room = [];
+      let start = 10 * (this.page - 1);
+      let end = start + 10 > this.rooms.length ? this.rooms.length : start + 10;
+      for (let i = start; i < end; i++) {
+        room.push(this.rooms[i]);
+      }
+      return room;
+    },
+  },
   data() {
     return {
-      tableData: [
-        {
-          date: "2016-05-03 22:22:00",
-          title: "整租 | 松南城芙蓉苑 3室2厅1卫 2700元月 电梯房 9",
-          mobile: "1333888888",
-          images: [
-            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTwFiF-XDX3xRHUVIW0VNHij00XFMX82xvQJg&usqp=CAU",
-            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTwFiF-XDX3xRHUVIW0VNHij00XFMX82xvQJg&usqp=CAU",
-          ],
-          devices: [
-            "免费WIFI",
-            "热水供给",
-            "免费WIFI",
-            "热水供给",
-            "免费WIFI",
-            "热水供给",
-            "免费WIFI",
-            "热水供给",
-          ],
-          address: "上海市普陀区金沙江路 1518 弄",
-          money: "1200-2000",
-          msg: "【交通出行】 小区交通出行便利，出门往东有昌盛园二区东门公交站，326路从南邵地铁站到朝凤庵村，也经过昌平东关地铁站。【周边配套】 小区周边配套齐全，有小吃店，便利店，蔬菜水果超市，公交站等配套设施健身场所。【小区介绍】 此房源位于昌盛园二区，小区有停车位，电动自行车车棚，出行便利",
-        },
-        {
-          date: "2016-05-03 22:22:00",
-          title: "整租 | 松南城芙蓉苑 3室2厅1卫 2700元月 电梯房 9",
-          mobile: "1333888888",
-          images: [
-            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTwFiF-XDX3xRHUVIW0VNHij00XFMX82xvQJg&usqp=CAU",
-            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTwFiF-XDX3xRHUVIW0VNHij00XFMX82xvQJg&usqp=CAU",
-          ],
-          devices: ["免费WIFI", "热水供给"],
-          address: "上海市普陀区金沙江路 1518 弄",
-          money: "1200-2000",
-          msg: "【交通出行】 小区交通出行便利，出门往东有昌盛园二区东门公交站，326路从南邵地铁站到朝凤庵村，也经过昌平东关地铁站。【周边配套】 小区周边配套齐全，有小吃店，便利店，蔬菜水果超市，公交站等配套设施健身场所。【小区介绍】 此房源位于昌盛园二区，小区有停车位，电动自行车车棚，出行便利",
-        },
-        {
-          date: "2016-05-03 22:22:00",
-          title: "整租 | 松南城芙蓉苑 3室2厅1卫 2700元月 电梯房 9",
-          mobile: "1333888888",
-          images: [
-            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTwFiF-XDX3xRHUVIW0VNHij00XFMX82xvQJg&usqp=CAU",
-            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTwFiF-XDX3xRHUVIW0VNHij00XFMX82xvQJg&usqp=CAU",
-          ],
-          devices: ["免费WIFI", "热水供给"],
-          address: "上海市普陀区金沙江路 1518 弄",
-          money: "1200-2000",
-          msg: "【交通出行】 小区交通出行便利，出门往东有昌盛园二区东门公交站，326路从南邵地铁站到朝凤庵村，也经过昌平东关地铁站。【周边配套】 小区周边配套齐全，有小吃店，便利店，蔬菜水果超市，公交站等配套设施健身场所。【小区介绍】 此房源位于昌盛园二区，小区有停车位，电动自行车车棚，出行便利",
-        },
-        {
-          date: "2016-05-03 22:22:00",
-          title: "整租 | 松南城芙蓉苑 3室2厅1卫 2700元月 电梯房 9",
-          mobile: "1333888888",
-          images: [
-            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTwFiF-XDX3xRHUVIW0VNHij00XFMX82xvQJg&usqp=CAU",
-            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTwFiF-XDX3xRHUVIW0VNHij00XFMX82xvQJg&usqp=CAU",
-          ],
-          devices: ["免费WIFI", "热水供给"],
-          address: "上海市普陀区金沙江路 1518 弄",
-          money: "1200-2000",
-          msg: "【交通出行】 小区交通出行便利，出门往东有昌盛园二区东门公交站，326路从南邵地铁站到朝凤庵村，也经过昌平东关地铁站。【周边配套】 小区周边配套齐全，有小吃店，便利店，蔬菜水果超市，公交站等配套设施健身场所。【小区介绍】 此房源位于昌盛园二区，小区有停车位，电动自行车车棚，出行便利",
-        },
-      ],
+      loading: false,
     };
   },
   methods: {
@@ -118,6 +100,30 @@ export default {
     show() {
       this.$emit("showImage");
     },
+    showDevice() {
+      this.$emit("showDevice");
+    },
+    async getData() {
+      this.loading = true;
+      let _result = (await getrooms()).data;
+      if (_result.code != 200) this.$message.error(_result.msg);
+      const rooms = _result.data.map((value) => {
+        value.time = formatTimestamp(new Date(value.time).getTime());
+        return value;
+      });
+      this.$store.commit("room/updateRooms", rooms);
+      this.loading = false;
+    },
+    showMoney(start, end) {
+      if (start == 0 && end == 0) return "不限";
+      else if (start == 0) return "<" + end;
+      else if (end == 0) return ">" + start;
+      else if (start == end) return start;
+      else return start + '-' + end;
+    },
+  },
+  mounted() {
+    this.getData();
   },
 };
 </script>

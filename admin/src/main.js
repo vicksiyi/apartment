@@ -10,12 +10,13 @@ import {
   Timeline, TimelineItem, Switch, Table, TableColumn, TimeSelect,
   Notification, Aside, Menu, MenuItem, Submenu, MenuItemGroup,
   Drawer, CheckboxGroup, Checkbox, Upload, Dialog, Popover, Loading,
-  Message
+  Message,RadioGroup
 } from 'element-ui';
 Vue.config.productionTip = false
 Vue.prototype.$message = Message;
 Vue.prototype.$notify = Notification;
 Vue.prototype.$loading = Loading.service;
+Vue.use(RadioGroup);
 Vue.use(Loading.directive);
 Vue.use(Popover)
 Vue.use(CheckboxGroup)

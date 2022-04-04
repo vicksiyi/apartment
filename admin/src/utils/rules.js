@@ -15,5 +15,14 @@ module.exports = {
         checkPass: "",
         identity: "0",
         code: "",
+    },
+    roomRuleForm: {
+        title: "",
+        startMoney: 0,
+        endMoney: 0,
+        mobile: "",
+        msg: "",
+        address: "",
+        status: 0,
     }
 }

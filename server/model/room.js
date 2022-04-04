@@ -8,7 +8,11 @@ class Room extends Handle {
         return super.commit(sql);
     }
     query_device() {
-        const sql = `select * from room_type where status = 0 order by time desc`;
+        const sql = `select * from room_type order by time desc`;
+        return super.commit(sql);
+    }
+    update_device(id) {
+        const sql = `update room_type set status = !status where id = ${id}`;
         return super.commit(sql);
     }
     insert_room(title, mobile, address, msg, startMoney, endMoney, status) {

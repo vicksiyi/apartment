@@ -11,8 +11,21 @@
       </el-table-column>
       <el-table-column prop="title" label="名称"> </el-table-column>
       <el-table-column label="操作" width="180">
-        <template>
-          <el-button type="danger" size="mini">删除</el-button>
+        <template slot-scope="scope">
+          <el-button
+            v-if="!scope.row.status"
+            type="danger"
+            @click="updateDevice(scope.row.id)"
+            size="mini"
+            >隐藏</el-button
+          >
+          <el-button
+            v-else
+            type="success"
+            @click="updateDevice(scope.row.id)"
+            size="mini"
+            >显示</el-button
+          >
         </template>
       </el-table-column>
     </el-table>
@@ -21,7 +34,7 @@
 
 <script>
 import { mapState } from "vuex";
-import { getdevice } from "@/api/room/index";
+import { updatedevice, getdevice } from "@/api/room/index";
 import { formatTimestamp } from "@/utils/format";
 export default {
   name: "Show",
@@ -68,6 +81,11 @@ export default {
       });
       this.$store.commit("device/updateDevices", devices);
       this.loading = false;
+    },
+    async updateDevice(id) {
+      let _result = (await updatedevice(id)).data;
+      if (_result.code != 200) this.$message.error(_result.msg);
+      this.update = !this.update;
     },
   },
   mounted() {

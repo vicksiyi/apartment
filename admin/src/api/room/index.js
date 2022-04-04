@@ -9,10 +9,18 @@ export const adddevice = function (parms) {
     })
 }
 
-// 验证token是否失效
+// 获取配套设施
 export const getdevice = function () {
     return axios.request({
         url: '/api/room/getdevice'
+    })
+}
+
+// 获取配套设施
+export const updatedevice = function (id) {
+    return axios.request({
+        url: `/api/room/updatedevice/${id}`,
+        method: 'put'
     })
 }
 

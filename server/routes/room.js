@@ -54,6 +54,20 @@ router.post('/adddevice', passport.authenticate('jwt', { session: false }), asyn
     res.send({ code: 200 })
 })
 
+
+// $routes /room/updatedevice
+// @desc 添加房屋配套
+// @access private
+router.put('/updatedevice/:id', passport.authenticate('jwt', { session: false }), async (req, res) => {
+    if (req.user.identity != 1) res.status(401).send({ code: 401, msg: "没权限" });
+    const { id } = req.params;
+    let _result = await room.update_device(id).catch(err => {
+        res.send({ code: 400, msg: "未知错误" })
+        throw Error(err);
+    });
+    res.send({ code: 200 })
+})
+
 // $routes /room/getdevice
 // @desc 获取房屋配套
 // @access private

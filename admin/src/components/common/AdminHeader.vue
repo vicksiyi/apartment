@@ -49,7 +49,10 @@ export default {
   },
   methods: {
     selectAvatar(res) {
-      if (res === 0) this.$router.push({ path: "/login" });
+      if (res === 0) {
+        this.$store.commit("header/setToken", "");
+        this.$router.push({ path: "/login" });
+      }
     },
     handleMenu: function () {
       this.$store.commit("collapseMenu");

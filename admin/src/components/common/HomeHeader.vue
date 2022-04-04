@@ -48,6 +48,12 @@ export default {
       type: Boolean,
       default: false,
     },
+    headers: {
+      type: Object,
+      default() {
+        return {};
+      },
+    },
   },
   data() {
     return {};
@@ -61,6 +67,9 @@ export default {
     toHome() {
       this.$router.push("/");
     },
+  },
+  mounted() {
+    console.log(this.headers);
   },
 };
 </script>

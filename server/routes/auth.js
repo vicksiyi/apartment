@@ -5,6 +5,7 @@ const utils = require('../utils/utils');
 const md5 = require('js-md5');
 const jwt = require('jsonwebtoken');
 const keys = require('../config/keys');
+const passport = require('passport');
 const getSmsCode = require("../utils/random").getSmsCode;
 const redisHandle = require("../utils/redis");
 
@@ -66,6 +67,17 @@ router.post('/register', async (req, res) => {
     }
 })
 
+// $routes /auth/isauth
+// @desc 是否失效
+// @access private
+router.get('/isauth', passport.authenticate('jwt', { session: false }), async (req, res) => {
+    const { identity } = req.user;
+    const query = req.query;
+    const is_admin = query.is_admin ? query.is_admin : 0;
+    if (identity == 0 && is_admin == 1) res.status(401).send()
+    else res.send({ code: 200 })
+})
+
 // $routes /auth/login
 // @desc 登录
 // @access private
@@ -86,7 +98,7 @@ router.post('/login', async (req, res) => {
     });
     _result = utils.toJson(_result);
     if (_result.length !== 0 && _result[0].passwd === passwd) {
-        const rule = { uuid: _result[0].uuid };
+        const rule = { uuid: _result[0].uuid, identity: identity };
         const _token = await jwtToken(rule).catch(err => {
             res.send({ code: 400, msg: "未知错误" })
             throw Error(err);

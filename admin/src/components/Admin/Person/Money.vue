@@ -1,6 +1,6 @@
 <template>
   <div class="money">
-    Money
+    MoneyTedst
   </div>
 </template>
 

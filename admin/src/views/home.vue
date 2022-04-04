@@ -1,7 +1,9 @@
 <template>
   <div class="home">
     <el-container>
-      <el-header style="padding: 0"><HomeHeader></HomeHeader></el-header>
+      <el-header style="padding: 0"
+        ><HomeHeader :headers="headers"></HomeHeader
+      ></el-header>
       <el-main>
         <router-view></router-view>
       </el-main>
@@ -11,6 +13,7 @@
 </template>
 
 <script>
+import { isauth } from "@/api/auth/index";
 import HomeHeader from "@/components/common/HomeHeader";
 import Footer from "@/components/common/Footer";
 export default {
@@ -18,6 +21,9 @@ export default {
   components: { HomeHeader, Footer },
   data() {
     return {};
+  },
+  mounted() {
+    isauth();
   },
 };
 </script>

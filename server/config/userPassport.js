@@ -9,7 +9,7 @@ opts.secretOrKey = keys.secretUser;
 
 module.exports = passport => {
     passport.use(new JwtStrategy(opts, (jwt_payload, done) => {
-        let sql = `select * from users where uuid = '${jwt_payload.uuid}'`;
+        let sql = `select * from users where uuid = '${jwt_payload.uuid}' and identity = ${jwt_payload.identity}`;
         handle(db, sql, (err, user) => {
             let formatData = JSON.parse(JSON.stringify(user))
             if (formatData.length != 0) {

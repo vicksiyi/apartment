@@ -1,0 +1,31 @@
+@font-face {
+    font-family: 'webfont';
+    font-display: swap;
+    src: url('//at.alicdn.com/t/webfont_esf9mtocqsj.eot');
+    /* IE9*/
+    src: url('//at.alicdn.com/t/webfont_esf9mtocqsj.eot?#iefix') format('embedded-opentype'),
+        /* IE6-IE8 */
+        url('//at.alicdn.com/t/webfont_esf9mtocqsj.woff2') format('woff2'),
+        url('//at.alicdn.com/t/webfont_esf9mtocqsj.woff') format('woff'),
+        /* chrome、firefox */
+        url('//at.alicdn.com/t/webfont_esf9mtocqsj.ttf') format('truetype'),
+        /* chrome、firefox、opera、Safari, Android, iOS 4.2+*/
+        url('//at.alicdn.com/t/webfont_esf9mtocqsj.svg#Alibaba-PuHuiTi-Bold') format('svg');
+    /* iOS 4.1- */
+}
+
+@font-face {
+    font-family: 'room-title';
+    font-display: swap;
+    src: url('//at.alicdn.com/t/webfont_w7ln67sqje.eot');
+    /* IE9*/
+    src: url('//at.alicdn.com/t/webfont_w7ln67sqje.eot?#iefix') format('embedded-opentype'),
+        /* IE6-IE8 */
+        url('//at.alicdn.com/t/webfont_w7ln67sqje.woff2') format('woff2'),
+        url('//at.alicdn.com/t/webfont_w7ln67sqje.woff') format('woff'),
+        /* chrome、firefox */
+        url('//at.alicdn.com/t/webfont_w7ln67sqje.ttf') format('truetype'),
+        /* chrome、firefox、opera、Safari, Android, iOS 4.2+*/
+        url('//at.alicdn.com/t/webfont_w7ln67sqje.svg#思源黑体-粗') format('svg');
+    /* iOS 4.1- */
+}

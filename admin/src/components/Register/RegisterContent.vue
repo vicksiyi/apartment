@@ -18,7 +18,7 @@
                 <div class="select">
                   <el-dropdown @command="select">
                     <el-button size="medium" class="select-btn" type="primary">
-                      {{ phones[ruleForm.selectPhoneNum].num }}
+                      {{ phones[selectPhoneNum].num }}
                       <i class="el-icon-arrow-down el-icon--right"></i>
                     </el-button>
                     <el-dropdown-menu slot="dropdown">
@@ -40,7 +40,7 @@
                 </div>
               </div>
             </el-form-item>
-            <el-form-item>
+            <el-form-item prop="code">
               <div class="mobile-number">
                 <div class="select">
                   <div class="number">
@@ -68,11 +68,11 @@
                 </div>
               </div>
             </el-form-item>
-            <el-form-item prop="password">
+            <el-form-item prop="passwd">
               <el-input
                 type="password"
                 placeholder="密码"
-                v-model="ruleForm.password"
+                v-model="ruleForm.passwd"
                 autocomplete="off"
               ></el-input>
             </el-form-item>
@@ -85,7 +85,7 @@
               ></el-input>
             </el-form-item>
             <div style="margin-left: 70px">
-              <el-form-item label="注册类型">
+              <el-form-item label="注册类型" prop="identity">
                 <div>
                   <el-radio
                     v-model="ruleForm.identity"
@@ -94,13 +94,6 @@
                     size="medium"
                     >用户</el-radio
                   >
-                  <!-- <el-radio
-                    v-model="ruleForm.identity"
-                    label="1"
-                    border
-                    size="medium"
-                    >管理员</el-radio
-                  > -->
                 </div>
               </el-form-item>
             </div>
@@ -129,34 +122,20 @@
 </template>
 
 <script>
+import md5 from "js-md5";
+import { registerRuleForm } from "@/utils/rules";
+import { toJson } from "@/utils/switch";
+import { sendcode, register } from "@/api/auth/index";
+import form from "@/utils/form";
+import loading from "@/utils/loading";
+let time = null;
 export default {
   name: "RegisterContent",
   data() {
-    var validateAccount = (rule, value, callback) => {
-      if (value === "") {
-        callback(new Error("请输入账号"));
-      } else {
-        callback();
-      }
-    };
-    var validateName = (rule, value, callback) => {
-      if (value === "") {
-        callback(new Error("请输入真实姓名"));
-      } else {
-        callback();
-      }
-    };
-    var validatePass = (rule, value, callback) => {
-      if (value === "") {
-        callback(new Error("请输入密码"));
-      } else {
-        callback();
-      }
-    };
     var validatePass2 = (rule, value, callback) => {
       if (value === "") {
         callback(new Error("请再次输入密码"));
-      } else if (value !== this.ruleForm.password) {
+      } else if (value !== this.ruleForm.passwd) {
         callback(new Error("两次输入密码不一致!"));
       } else {
         callback();
@@ -172,6 +151,7 @@ export default {
       }
     };
     return {
+      selectPhoneNum: 0,
       downCode: "发送验证码",
       phones: [
         {
@@ -185,34 +165,76 @@ export default {
           num: "+852",
         },
       ],
-      ruleForm: {
-        account: "",
-        password: "",
-        checkPass: "",
-        identity: "0",
-        mobile: "",
-        name: "",
-        code: "",
-        selectPhoneNum: 0,
-      },
+      ruleForm: toJson(registerRuleForm),
       rules: {
-        name: [{ validator: validateName, trigger: "blur" }],
-        password: [{ validator: validatePass, trigger: "blur" }],
+        passwd: [{ required: true, message: "请输入密码", trigger: "blur" }],
         checkPass: [{ validator: validatePass2, trigger: "blur" }],
-        account: [{ validator: validateAccount, trigger: "blur" }],
         mobile: [{ validator: validatePhone, trigger: "blur" }],
+        code: [
+          { required: true, message: "请输入验证码", trigger: "blur" },
+          { min: 4, max: 4, message: "格式错误", trigger: "blur" },
+        ],
       },
     };
   },
   methods: {
     submitForm(formName) {
-      this.$refs[formName].validate((valid) => {
+      form.validate(this, formName).then(async (valid) => {
         if (valid) {
+          let _loadding = loading.start(this);
+          let data = {
+            mobile: this.ruleForm.mobile,
+            code: this.ruleForm.code,
+            passwd: md5(this.ruleForm.passwd),
+          };
+          console.log(data);
+          let _result = (await register({ data: data })).data;
+          if (_result.code != 200) this.$message.error(_result.msg);
+          else {
+            this.$message({
+              type: "success",
+              message: "注册成功",
+            });
+            this.$router.push("/login");
+          }
+          loading.end(_loadding);
         } else {
           console.log("error submit!!");
           return false;
         }
       });
+    },
+    select(res) {
+      this.selectPhoneNum = res;
+    },
+    async sendCode() {
+      let mobile = this.ruleForm.mobile;
+      if (!/^1[3456789]\d{9}$/.test(mobile)) {
+        this.$message({
+          message: "手机号格式不对",
+          type: "warning",
+        });
+      } else {
+        let _result = (await sendcode({ data: { mobile: mobile } })).data;
+        if (_result.code != 200) this.$message.error(_result.msg);
+        else {
+          this.$message({
+            message: "发送成功",
+            type: "success",
+          });
+          time = setInterval(() => {
+            if (this.downCode === "发送验证码") {
+              this.downCode = 60;
+            } else {
+              this.downCode--;
+            }
+            if (this.downCode == 0) {
+              this.downCode = "发送验证码";
+              clearInterval(time);
+            }
+          }, 1000);
+        }
+      }
     },
   },
 };

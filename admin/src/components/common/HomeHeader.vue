@@ -62,7 +62,10 @@ export default {
     selectAvatar(res) {
       console.log(res === 0);
       if (res === 0) this.$router.push({ path: "/mine" });
-      else if (res === 1) this.$router.push({ path: "/login" });
+      else if (res === 1) {
+        this.$store.commit("header/setToken", "");
+        this.$router.push({ path: "/login" });
+      }
     },
     toHome() {
       this.$router.push("/");

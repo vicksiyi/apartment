@@ -114,9 +114,8 @@ router.post('/login', async (req, res) => {
 // $routes /auth/sendSMS
 // @desc 发送验证码
 // @access private
-router.post('/sendSMS', async (req, res) => {
+router.post('/sendcode', async (req, res) => {
     let { mobile } = req.body;
-    console.log(mobile);
     if (!(/^1[3456789]\d{9}$/.test(mobile))) {
         res.send({ status: 400, msg: "手机号格式错误" });
         return;
@@ -136,13 +135,13 @@ router.post('/sendSMS', async (req, res) => {
         });
         if (_ttl === -2 || _ttl < 3540) {
             redisHandle.setTtlKey(`apartment:register:${mobile}`, code).then(() => {
-                res.send({ status: 200, msg: "发送成功" });
+                res.send({ code: 200, msg: "发送成功" });
             }).catch(err => {
                 res.send({ code: 400, msg: "未知错误" })
                 throw Error(err);
             });
         } else {
-            res.send({ status: 200, msg: "禁止频繁发送" });
+            res.send({ code: 400, msg: "禁止频繁发送" });
         }
     }
 })

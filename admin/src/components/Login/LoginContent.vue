@@ -80,7 +80,6 @@ import md5 from "js-md5";
 import { loginRuleForm, loginRules } from "@/utils/rules";
 import { toJson } from "@/utils/switch";
 import { login } from "@/api/auth/index";
-import { mapActions } from "vuex";
 import form from "@/utils/form";
 import loading from "@/utils/loading";
 export default {

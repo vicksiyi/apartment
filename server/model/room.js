@@ -29,6 +29,23 @@ class Room extends Handle {
         const sql = `select * from rooms order by time desc`;
         return super.commit(sql);
     }
+    user_query_room() {
+        const sql = `select rs.uuid,rs.title,rs.startMoney,rs.endMoney,rs.address,i.url from rooms rs 
+        inner join room_rel_image i on i.room_uuid = rs.uuid where rs.status = 1 order by rs.time desc;`;
+        return super.commit(sql);
+    }
+    user_query_one_room(roomId) {
+        const sql = `select rs.*,i.url from rooms rs right join room_rel_image i 
+        on i.room_uuid = rs.uuid where rs.status = 1 
+        and rs.uuid = '${roomId}';`;
+        return super.commit(sql);
+    }
+    user_query_one_room_type(roomId) {
+        const sql = `select rt.title from room_rel_room_type rrrt 
+        inner join room_type rt on 
+        rt.id = rrrt.room_type_id where rrrt.room_uuid = "${roomId}";`;
+        return super.commit(sql);
+    }
     insert_rel_room_image(roomId, url) {
         const sql = `insert into room_rel_image(room_uuid,url) 
         values('${roomId}','${url}')`;

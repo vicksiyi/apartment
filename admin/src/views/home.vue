@@ -2,7 +2,7 @@
   <div class="home">
     <el-container>
       <el-header style="padding: 0"
-        ><HomeHeader :headers="headers"></HomeHeader
+        ><HomeHeader></HomeHeader
       ></el-header>
       <el-main>
         <router-view></router-view>

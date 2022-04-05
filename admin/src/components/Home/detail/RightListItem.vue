@@ -1,18 +1,17 @@
 <template>
   <el-card class="box-card margin-card">
-    <div class="right-list-item">
+    <div @click="navDetail(room.uuid)" class="right-list-item">
       <div class="img">
-        <img
-          src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTwFiF-XDX3xRHUVIW0VNHij00XFMX82xvQJg&usqp=CAU"
-          alt=""
-        />
+        <img :src="room.url" alt="" />
       </div>
       <div class="detail">
         <div class="title">
-          <span>整租 | 松南城芙蓉苑 3室2厅1卫 2700元月 电梯房 9</span>
+          <span>{{ room.title }}</span>
         </div>
-        <p>价格:<span>1000-1500</span></p>
-        <p>位置:天河区xxx街道xxx号</p>
+        <p>
+          价格:<span>{{ showMoney(room.startMoney, room.endMoney) }}</span>
+        </p>
+        <p>位置:{{ room.address }}</p>
       </div>
     </div>
   </el-card>
@@ -21,10 +20,27 @@
 <script>
 export default {
   name: "RightListItem",
+  props: {
+    room: {
+      type: Object,
+      default: () => ({}),
+    },
+  },
   data() {
     return {};
   },
-  methods: {},
+  methods: {
+    navDetail(uuid) {
+      this.$emit("navDetail", uuid);
+    },
+    showMoney(start, end) {
+      if (start == 0 && end == 0) return "不限";
+      else if (start == 0) return "<" + end;
+      else if (end == 0) return ">" + start;
+      else if (start == end) return start;
+      else return start + "-" + end;
+    },
+  },
 };
 </script>
 

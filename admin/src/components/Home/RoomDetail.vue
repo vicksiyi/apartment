@@ -2,9 +2,11 @@
   <div class="room-detail">
     <el-row :gutter="20" style="margin-top: 20px">
       <el-col :span="16">
-        <RoomLeftDetail></RoomLeftDetail>
+        <RoomLeftDetail @evenLoading="evenLoading"></RoomLeftDetail>
       </el-col>
-      <el-col :span="8"> <RoomRightList></RoomRightList> </el-col>
+      <el-col :span="8">
+        <RoomRightList :loading="loading"></RoomRightList>
+      </el-col>
     </el-row>
   </div>
 </template>
@@ -16,9 +18,15 @@ export default {
   name: "RoomDetail",
   components: { RoomLeftDetail, RoomRightList },
   data() {
-    return {};
+    return {
+      loading: false,
+    };
   },
-  methods: {},
+  methods: {
+    evenLoading(status) {
+      this.loading = status;
+    },
+  },
 };
 </script>
 

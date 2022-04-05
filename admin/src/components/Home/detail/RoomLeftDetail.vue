@@ -1,46 +1,29 @@
 <template>
-  <div class="room-left-detail">
+  <div class="room-left-detail" v-loading="loading">
     <!-- 房屋图片 -->
     <div class="room-img">
       <el-carousel height="400px">
-        <el-carousel-item v-for="item in 4" :key="item">
-          <img
-            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTwFiF-XDX3xRHUVIW0VNHij00XFMX82xvQJg&usqp=CAU"
-            alt=""
-          />
+        <el-carousel-item v-for="item in room.images" :key="item">
+          <img :src="item" alt="" />
         </el-carousel-item>
       </el-carousel>
     </div>
     <div class="detail">
-      <h1>整租 | 松南城芙蓉苑 3室2厅1卫 2700元月 电梯房 9</h1>
-      <p>价格:<span>1000-1500</span></p>
-      <p>位置:天河区xxx街道xxx号</p>
-      <p>联系:13338888888</p>
+      <h1>{{ room.title }}</h1>
+      <p>
+        价格:<span>{{ showMoney(room.startMoney, room.endMoney) }}</span>
+      </p>
+      <p>位置:{{ room.address }}</p>
+      <p>联系:{{ room.mobile }}</p>
       <div class="detail-item">
         <div class="title">
           <div></div>
           配套设施
         </div>
-        <div class="item">
-          <div class="tag">洗衣机</div>
-          <div class="tag">洗衣机</div>
-          <div class="tag">洗衣机</div>
-          <div class="tag">洗衣机</div>
-          <div class="tag">洗衣机</div>
-          <div class="tag">洗衣机</div>
-          <div class="tag">洗衣机</div>
-          <div class="tag">洗衣机</div>
-          <div class="tag">洗衣机</div>
-          <div class="tag">洗衣机</div>
-          <div class="tag">洗衣机</div>
-          <div class="tag">洗衣机</div>
-          <div class="tag">洗衣机</div>
-          <div class="tag">洗衣机</div>
-          <div class="tag">洗衣机</div>
-          <div class="tag">洗衣机</div>
-          <div class="tag">洗衣机</div>
-          <div class="tag">洗衣机</div>
+        <div v-if="types.length != 0" class="item">
+          <div v-for="item in types" :key="item.id" class="tag">{{ item }}</div>
         </div>
+        <div v-else class="item" style="padding: 10px">不提供任何配套设施</div>
       </div>
       <div class="detail-item">
         <div class="title">
@@ -48,19 +31,7 @@
           房屋详情
         </div>
         <div class="msg">
-          【交通出行】
-          小区交通出行便利，出门往东有昌盛园二区东门公交站，326路从南邵地铁站到朝凤庵村，也经过昌平东关地铁站。
-          <br />
-          <img
-            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTwFiF-XDX3xRHUVIW0VNHij00XFMX82xvQJg&usqp=CAU"
-            alt=""
-          />
-          <br />
-          【周边配套】
-          小区周边配套齐全，有小吃店，便利店，蔬菜水果超市，公交站等配套设施健身场所。
-          <br />
-          【小区介绍】
-          此房源位于昌盛园二区，小区有停车位，电动自行车车棚，出行便利
+          {{ room.msg }}
         </div>
       </div>
     </div>
@@ -68,12 +39,60 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
+import { usergetroom, usergetroomtype } from "@/api/room/user_room";
 export default {
   name: "RoomLeftDetail",
-  data() {
-    return {};
+  computed: {
+    ...mapState({
+      room: (state) => state.user_room.room,
+    }),
+    roomId() {
+      let roomId = this.$route.query.roomId;
+      if (roomId == undefined) this.$router.replace("/");
+      else return roomId;
+    },
   },
-  methods: {},
+  watch: {
+    roomId() {
+      this.getData();
+    },
+  },
+  data() {
+    return {
+      loading: false,
+      types: [],
+    };
+  },
+  methods: {
+    async getData() {
+      this.loading = true;
+      this.$emit("evenLoading", true);
+      Promise.all([
+        usergetroom({ roomId: this.roomId }),
+        usergetroomtype({ roomId: this.roomId }),
+      ]).then((_result) => {
+        if (_result[0].data.code != 200 || _result[1].data.code != 200)
+          this.$message.error(_result.msg);
+        else {
+          this.$store.commit("user_room/updateRoom", _result[0].data.data);
+          this.types = _result[1].data.data;
+        }
+        this.loading = false;
+        this.$emit("evenLoading", false);
+      });
+    },
+    showMoney(start, end) {
+      if (start == 0 && end == 0) return "不限";
+      else if (start == 0) return "<" + end;
+      else if (end == 0) return ">" + start;
+      else if (start == end) return start;
+      else return start + "-" + end;
+    },
+  },
+  mounted() {
+    this.getData();
+  },
 };
 </script>
 

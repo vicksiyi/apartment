@@ -13,6 +13,55 @@ router.get('/user/getrooms', async (req, res) => {
 
 })
 
+// $routes /room/usergetrooms
+// @desc 获取公寓列表[用户]
+// @access private
+router.get('/usergetrooms', passport.authenticate('jwt', { session: false }), async (req, res) => {
+    // 全部
+    let _result = await room.user_query_room().catch(err => {
+        res.send({ code: 400, msg: "未知错误" })
+        throw Error(err);
+    });
+    _result = utils.toJson(_result);
+    res.send({ code: 200, data: _result })
+})
+
+// $routes /room/usergetroom/:roomId
+// @desc 获取某个公寓详细信息[用户]
+// @access private
+router.get('/usergetroom/:roomId', passport.authenticate('jwt', { session: false }), async (req, res) => {
+    const { roomId } = req.params;
+    let _result = await room.user_query_one_room(roomId).catch(err => {
+        res.send({ code: 400, msg: "未知错误" })
+        throw Error(err);
+    });
+    _result = utils.toJson(_result);
+    let data = null;
+    for (let i = 0; i < _result.length; i++) {
+        if (!data) {
+            data = Object.assign(_result[i], {});
+            data.images = [data.url];
+        } else if (_result[i].uuid == roomId) {
+            data.images.push(_result[i].url);
+        }
+    }
+    data.images = [...new Set(data.images)];
+    res.send({ code: 200, data: data })
+})
+
+// $routes /room/usergetroomtype/:roomId
+// @desc 获取某个公寓详细信息[用户]
+// @access private
+router.get('/usergetroomtype/:roomId', passport.authenticate('jwt', { session: false }), async (req, res) => {
+    const { roomId } = req.params;
+    let _result = await room.user_query_one_room_type(roomId).catch(err => {
+        res.send({ code: 400, msg: "未知错误" })
+        throw Error(err);
+    });
+    _result = utils.toJson(_result);
+    _result = _result.map(value => value.title);
+    res.send({ code: 200, data: _result })
+})
 
 // $routes /room/getrooms
 // @desc 获取公寓列表

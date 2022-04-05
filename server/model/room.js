@@ -37,6 +37,19 @@ class Room extends Handle {
         const sql = `delete from room_rel_image where id = ${id}`;
         return super.commit(sql);
     }
+    insert_room_rel_room_type(roomId, deviceId) {
+        const sql = `insert into room_rel_room_type(room_uuid,room_type_id) 
+        values('${roomId}',${deviceId})`;
+        return super.commit(sql);
+    }
+    query_room_rel_room_type(roomId) {
+        const sql = `select * from room_rel_room_type where room_uuid = '${roomId}';`;
+        return super.commit(sql);
+    }
+    del_room_rel_room_type(id) {
+        const sql = `delete from room_rel_room_type where id = ${id}`;
+        return super.commit(sql);
+    }
 }
 const room = new Room();
 module.exports = room;

@@ -54,3 +54,26 @@ export const delimage = function (parms) {
         method: "put"
     })
 }
+
+// 添加公寓设备
+export const addroomdevice = function (parms) {
+    return axios.request({
+        url: `/api/room/addroomdevice`,
+        method: "post",
+        data: parms.data
+    })
+}
+
+// 获取公寓设备
+export const getroomdevice = function (parms) {
+    return axios.request({
+        url: `/api/room/getroomdevice/${parms.roomId}`
+    })
+}
+
+export const delroomdevice = function (parms) {
+    return axios.request({
+        url: `/api/room/delroomdevice/${parms.id}`,
+        method: "delete"
+    })
+}

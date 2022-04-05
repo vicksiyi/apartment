@@ -81,10 +81,33 @@ router.get('/getdevice', passport.authenticate('jwt', { session: false }), async
     res.send({ code: 200, data: _result })
 })
 
-// $routes /room/addimage
-// @desc 添加公寓图片
+// $routes /room/getimages
+// @desc 获取公寓图片
 // @access private
-router.post('/addimage', passport.authenticate('jwt', { session: false }), async (req, res) => {
+router.get('/getimages/:roomId', passport.authenticate('jwt', { session: false }), async (req, res) => {
     if (req.user.identity != 1) res.send({ code: 401, msg: "没权限" });
+    const { roomId } = req.params;
+    let _result = await room.query_rel_room_image(roomId).catch(err => {
+        res.send({ code: 400, msg: "未知错误" })
+        throw Error(err);
+    });
+    _result = utils.toJson(_result);
+    _result = _result.map(value => {
+        return { id: value.id, url: value.url };
+    })
+    res.send({ code: 200, data: _result });
+})
+
+// $routes /room/delimage
+// @desc 删除公寓照片
+// @access private
+router.put('/delimage/:id', passport.authenticate('jwt', { session: false }), async (req, res) => {
+    if (req.user.identity != 1) res.send({ code: 401, msg: "没权限" });
+    const { id } = req.params;
+    let _result = await room.del_rel_room_image(id).catch(err => {
+        res.send({ code: 400, msg: "未知错误" })
+        throw Error(err);
+    });
+    res.send({ code: 200 });
 })
 module.exports = router;

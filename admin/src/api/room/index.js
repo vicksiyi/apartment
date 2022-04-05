@@ -39,3 +39,18 @@ export const getrooms = function (parms) {
         url: '/api/room/getrooms'
     })
 }
+
+// 获取公寓照片
+export const getimages = function (parms) {
+    return axios.request({
+        url: `/api/room/getimages/${parms.roomId}`
+    })
+}
+
+// 删除公寓照片
+export const delimage = function (parms) {
+    return axios.request({
+        url: `/api/room/delimage/${parms.id}`,
+        method: "put"
+    })
+}

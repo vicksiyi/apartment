@@ -19,13 +19,13 @@ class Upload {
         })
     }
     // 上传到OSS
-    uploadImage(filename) {
+    uploadImage(filepath) {
         const date = new Date();
-        const filepath = `${__dirname}/../routes/temp/${filename}`;
+        const filename = filepath.split(".").at(-1);
         const distpath = `/images/item/${date.getFullYear()}-${date.getMonth()}-${date.getDate()}/${filename}`;
         // 上传到OSS
         return new Promise((resolve, reject) => {
-            this.addFile(filepath, distpath).then((url) => {
+            this.addFile(filename, distpath).then((url) => {
                 file.delFile(filepath); //删除缓存文件
                 resolve(url);
             }).catch(err => reject(err));

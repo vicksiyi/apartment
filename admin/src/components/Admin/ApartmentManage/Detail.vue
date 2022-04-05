@@ -32,8 +32,8 @@
       :visible.sync="drawer"
       :direction="direction"
     >
-      <ShowImage v-if="isShowImage"></ShowImage>
-      <ShowDevice v-else-if="isShowDevice"></ShowDevice>
+      <ShowImage :roomId="roomId" v-if="isShowImage"></ShowImage>
+      <ShowDevice :roomId="roomId" v-else-if="isShowDevice"></ShowDevice>
       <Submit @closeDrawer="closeDrawer" v-else></Submit>
     </el-drawer>
   </div>
@@ -45,6 +45,8 @@ import Show from "./Detail/Show";
 import Submit from "./Detail/Submit";
 import ShowImage from "./Detail/ShowImage";
 import ShowDevice from "./Detail/ShowDevice";
+import { getdevice } from "@/api/room/index";
+import { formatTimestamp } from "@/utils/format";
 export default {
   name: "Detail",
   components: { Show, Submit, ShowImage, ShowDevice },
@@ -61,6 +63,7 @@ export default {
       isShowImage: false,
       isShowDevice: false,
       update: false,
+      roomId: "",
     };
   },
   methods: {
@@ -70,15 +73,17 @@ export default {
       this.isShowDevice = false;
       this.isEdit = type;
     },
-    showImage() {
+    showImage(roomId) {
       this.drawer = true;
       this.isShowImage = true;
       this.isShowDevice = false;
+      this.roomId = roomId;
     },
-    showDevice() {
+    showDevice(roomId) {
       this.drawer = true;
       this.isShowImage = false;
       this.isShowDevice = true;
+      this.roomId = roomId;
     },
     closeDrawer() {
       this.drawer = false;
@@ -87,6 +92,17 @@ export default {
     pageChange(page) {
       this.$store.commit("room/updatePage", page);
     },
+  },
+  mounted() {
+    getdevice().then((_result) => {
+      _result = _result.data;
+      if (_result.code != 200) this.$message.error(_result.msg);
+      const devices = _result.data.map((value) => {
+        value.time = formatTimestamp(new Date(value.time).getTime());
+        return value;
+      });
+      this.$store.commit("device/updateDevices", devices);
+    });
   },
 };
 </script>

@@ -12,7 +12,11 @@
       <el-table-column prop="mobile" label="联系"> </el-table-column>
       <el-table-column prop="address" label="地址"> </el-table-column>
       <el-table-column prop="images" label="图片" width="80">
-        <el-button type="success" @click="show" size="mini">查看</el-button>
+        <template slot-scope="scope">
+          <el-button type="success" @click="show(scope.row.uuid)" size="mini"
+            >查看</el-button
+          >
+        </template>
       </el-table-column>
       <el-table-column prop="devices" label="配套设施" width="80">
         <!-- <template slot-scope="scope">
@@ -23,9 +27,14 @@
             >{{ item }}</el-tag
           >
         </template> -->
-        <el-button type="success" @click="showDevice" size="mini"
-          >查看</el-button
-        >
+        <template slot-scope="scope">
+          <el-button
+            type="success"
+            @click="showDevice(scope.row.uuid)"
+            size="mini"
+            >查看</el-button
+          >
+        </template>
       </el-table-column>
       <el-table-column prop="money" label="价格">
         <template slot-scope="scope">
@@ -97,11 +106,11 @@ export default {
     edit() {
       this.$emit("show", true);
     },
-    show() {
-      this.$emit("showImage");
+    show(roomId) {
+      this.$emit("showImage", roomId);
     },
-    showDevice() {
-      this.$emit("showDevice");
+    showDevice(roomId) {
+      this.$emit("showDevice", roomId);
     },
     async getData() {
       this.loading = true;
@@ -119,7 +128,7 @@ export default {
       else if (start == 0) return "<" + end;
       else if (end == 0) return ">" + start;
       else if (start == end) return start;
-      else return start + '-' + end;
+      else return start + "-" + end;
     },
   },
   mounted() {

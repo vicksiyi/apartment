@@ -20,6 +20,7 @@
         background
         layout="prev, pager, next"
         :total="rooms.length"
+        :current-page="page"
         @current-change="pageChange"
       >
       </el-pagination>
@@ -34,7 +35,12 @@
     >
       <ShowImage :roomId="roomId" v-if="isShowImage"></ShowImage>
       <ShowDevice :roomId="roomId" v-else-if="isShowDevice"></ShowDevice>
-      <Submit @closeDrawer="closeDrawer" v-else></Submit>
+      <Submit
+        :updateSubmit="updateSubmit"
+        :isEdit="isEdit"
+        @closeDrawer="closeDrawer"
+        v-else
+      ></Submit>
     </el-drawer>
   </div>
 </template>
@@ -53,6 +59,7 @@ export default {
   computed: {
     ...mapState({
       rooms: (state) => state.room.rooms,
+      page: (state) => state.room.page,
     }),
   },
   data() {
@@ -64,6 +71,7 @@ export default {
       isShowDevice: false,
       update: false,
       roomId: "",
+      updateSubmit: false,
     };
   },
   methods: {
@@ -72,6 +80,7 @@ export default {
       this.isShowImage = false;
       this.isShowDevice = false;
       this.isEdit = type;
+      if (type) this.updateSubmit = !this.updateSubmit;
     },
     showImage(roomId) {
       this.drawer = true;

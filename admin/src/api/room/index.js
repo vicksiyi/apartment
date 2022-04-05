@@ -33,6 +33,15 @@ export const addroom = function (parms) {
     })
 }
 
+// 添加公寓
+export const editroom = function (parms) {
+    return axios.request({
+        url: '/api/room/editroom',
+        method: "put",
+        data: parms.data
+    })
+}
+
 // 获取公寓
 export const getrooms = function (parms) {
     return axios.request({

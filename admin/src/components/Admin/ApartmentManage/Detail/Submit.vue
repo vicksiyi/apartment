@@ -64,8 +64,19 @@
         ></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" style="width: 100%" @click="add('ruleForm')"
+        <el-button
+          v-if="!isEdit"
+          type="primary"
+          style="width: 100%"
+          @click="add('ruleForm')"
           >立即添加</el-button
+        >
+        <el-button
+          v-else
+          type="primary"
+          style="width: 100%"
+          @click="add('ruleForm', true, room.uuid)"
+          >修改</el-button
         >
       </el-form-item>
     </el-form>
@@ -73,13 +84,36 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
 import { roomRuleForm } from "@/utils/rules";
 import { toJson } from "@/utils/switch";
-import { addroom } from "@/api/room/index";
+import { addroom, editroom } from "@/api/room/index";
 import form from "@/utils/form";
 import loading from "@/utils/loading";
 export default {
   name: "Submit",
+  props: {
+    isEdit: {
+      type: Boolean,
+      default: false,
+    },
+    updateSubmit: {
+      type: Boolean,
+      default: false,
+    },
+  },
+  watch: {
+    updateSubmit() {
+      if (this.isEdit) {
+        this.ruleForm = this.room;
+      }
+    },
+  },
+  computed: {
+    ...mapState({
+      room: (state) => state.room.room,
+    }),
+  },
   data() {
     const validateMoney = (rule, value, callback) => {
       if (value < 0) {
@@ -106,15 +140,25 @@ export default {
     };
   },
   methods: {
-    add(formName) {
+    add(formName, status = false, uuid = "") {
       form.validate(this, formName).then(async (valid) => {
         if (valid) {
           let _loading = loading.start(this);
           let data = Object.assign({}, this.ruleForm);
-          let _result = (await addroom({ data: data })).data;
+          let _result;
+          if (!status) {
+            _result = (await addroom({ data: data })).data;
+          } else {
+            _result = (
+              await editroom({ data: Object.assign(data, { uuid: uuid }) })
+            ).data;
+          }
           if (_result.code != 200) this.$message.error(_result.msg);
           else {
-            this.$message({ type: "success", message: "添加成功" });
+            this.$message({
+              type: "success",
+              message: `添加${this.isEdit ? "修改" : "添加"}`,
+            });
             this.ruleForm = toJson(roomRuleForm);
             this.$emit("closeDrawer");
           }
@@ -125,6 +169,11 @@ export default {
         }
       });
     },
+  },
+  mounted() {
+    if (this.isEdit) {
+      this.ruleForm = this.room;
+    }
   },
 };
 </script>

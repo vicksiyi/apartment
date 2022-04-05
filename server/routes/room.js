@@ -41,6 +41,20 @@ router.post('/addroom', passport.authenticate('jwt', { session: false }), async 
     res.send({ code: 200 });
 })
 
+// $routes /room/editroom
+// @desc 修改公寓
+// @access private
+router.put('/editroom', passport.authenticate('jwt', { session: false }), async (req, res) => {
+    if (req.user.identity != 1) res.status(401).send({ code: 401, msg: "没权限" });
+    const { uuid, title, mobile, address, msg, startMoney, endMoney, status } = req.body;
+    console.log(uuid);
+    let _result = await room.update_room(uuid, title, mobile, address, msg, startMoney, endMoney, status).catch(err => {
+        res.send({ code: 400, msg: "未知错误" })
+        throw Error(err);
+    });
+    res.send({ code: 200 });
+})
+
 // $routes /room/adddevice
 // @desc 添加房屋配套
 // @access private

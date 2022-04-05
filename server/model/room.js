@@ -15,6 +15,11 @@ class Room extends Handle {
         const sql = `update room_type set status = !status where id = ${id}`;
         return super.commit(sql);
     }
+    update_room(uuid, title, mobile, address, msg, startMoney, endMoney, status) {
+        const sql = `update rooms set title='${title}',mobile='${mobile}',address='${address}'
+        ,msg='${msg}',startMoney=${startMoney},endMoney=${endMoney},status=${status} where uuid = '${uuid}'`;
+        return super.commit(sql);
+    }
     insert_room(title, mobile, address, msg, startMoney, endMoney, status) {
         const sql = `insert into rooms(title,mobile,address,msg,startMoney,endMoney,status) 
         values('${title}','${mobile}','${address}','${msg}',${startMoney},${endMoney},${status});`;

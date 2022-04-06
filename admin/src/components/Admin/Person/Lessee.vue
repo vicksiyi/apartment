@@ -16,15 +16,25 @@
     </div>
     <el-drawer
       :title="
-        showHandle == 0 ? '添加' : showHandle == 1 ? '公寓信息' : '租户信息'
+        showHandle == 0
+          ? '添加'
+          : showHandle == 1
+          ? '公寓信息'
+          : showHandle == 2
+          ? '租户信息'
+          : '续租'
       "
       :size="600"
       :visible.sync="drawer"
       :direction="direction"
     >
-      <Submit v-if="showHandle == 0"></Submit>
+      <Submit
+        :showHandle="showHandle"
+        v-if="showHandle == 0 || showHandle == 4"
+      ></Submit>
       <ShowRoom v-else-if="showHandle == 1"></ShowRoom>
-      <ShowLessee v-else></ShowLessee>
+      <ShowLessee v-else-if="showHandle == 2"></ShowLessee>
+      <ShowContinueRoom v-else></ShowContinueRoom>
     </el-drawer>
   </div>
 </template>
@@ -34,9 +44,10 @@ import Show from "./Lessee/Show";
 import Submit from "./Lessee/Submit";
 import ShowRoom from "./Lessee/Show/Room";
 import ShowLessee from "./Lessee/Show/Lessee";
+import ShowContinueRoom from "./Lessee/Show/ContinueRoom";
 export default {
   name: "Person",
-  components: { Show, Submit, ShowRoom, ShowLessee },
+  components: { Show, Submit, ShowRoom, ShowLessee, ShowContinueRoom },
   data() {
     return {
       drawer: false,

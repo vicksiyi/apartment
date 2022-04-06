@@ -8,6 +8,7 @@
       style="width: 100%"
     >
       <el-table-column sortable prop="time" label="日期"> </el-table-column>
+      <el-table-column prop="uuid" label="公寓Id"> </el-table-column>
       <el-table-column prop="title" label="名称"> </el-table-column>
       <el-table-column prop="mobile" label="联系"> </el-table-column>
       <el-table-column prop="address" label="地址"> </el-table-column>
@@ -58,7 +59,10 @@
       <el-table-column label="状态" width="100">
         <template slot-scope="scope">
           <el-tag v-if="scope.row.status == 0">未上架</el-tag>
-          <el-tag type="success" v-else>已上架</el-tag>
+          <el-tag v-else-if="scope.row.status == 1" type="success"
+            >已上架</el-tag
+          >
+          <el-tag v-else type="info">已出租</el-tag>
         </template>
       </el-table-column>
       <el-table-column label="操作">
@@ -66,7 +70,6 @@
           <el-button type="warning" @click="edit(scope.$index)" size="mini"
             >修改</el-button
           >
-          <!-- <el-button type="danger" size="mini">下架</el-button> -->
         </template>
       </el-table-column>
     </el-table>

@@ -1,16 +1,33 @@
 <template>
   <div class="device-type">
     <el-table :data="tableData" height="400" border style="width: 100%">
-      <el-table-column prop="id" label="序号"> </el-table-column>
-      <el-table-column prop="houseid" label="房号"> </el-table-column>
-      <el-table-column prop="mobile" label="联系"> </el-table-column>
-      <el-table-column prop="date" label="到期时间"> </el-table-column>
-     <el-table-column prop="datenum" label="距离到期时间还有"> </el-table-column>
-        <el-button type="success" @click="show" size="mini">查看</el-button>
-      <el-table-column label="操作">
+      <el-table-column prop="id" label="序号" width="80"> </el-table-column>
+      <el-table-column prop="roomid" label="房间Id"> </el-table-column>
+      <el-table-column prop="userid" label="租户Id"> </el-table-column>
+      <el-table-column prop="mobile" label="联系方式"> </el-table-column>
+      <el-table-column prop="endtime" label="到期时间"> </el-table-column>
+      <el-table-column label="租金/月" width="100">
+        <template slot-scope="scope">
+          <el-tag type="success" effect="dark"> {{ scope.row.money }} </el-tag>
+        </template></el-table-column
+      >
+      <el-table-column label="是否到期" width="80">
         <template>
-          <el-button type="warning" @click="edit" size="mini">修改</el-button>
-          <el-button type="danger" size="mini">删除</el-button>
+          <el-tag type="danger" effect="dark"> 是 </el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column label="查看">
+        <template>
+          <el-button type="success" @click="showRoom" size="mini"
+            >公寓</el-button
+          >
+          <el-button type="" @click="showLessee" size="mini">租户</el-button>
+        </template>
+      </el-table-column>
+      <el-table-column label="操作" width="180">
+        <template>
+          <el-button type="success" @click="continueRoom" size="mini">续租</el-button>
+          <el-button type="danger" size="mini">退租</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -24,43 +41,50 @@ export default {
     return {
       tableData: [
         {
-          id:"1",
-          houseid:"松南城芙蓉苑 3室2厅1卫 2700元月 电梯房 9",
+          id: "1",
+          roomid: "e11fdf33-b3ee-11ec-a092-00163e0c2d78",
+          userid: "e11fdf33-b3ee-11ec-a092-00163e0c2d78",
           mobile: "1333888888",
-          date: "2016-05-03 22:22:00",
-          datenum:"1天",
+          money: "1800",
+          endtime: "2022/04/06 12:12:00",
         },
         {
-          id:"2",
-          houseid:"松南城芙蓉苑 3室2厅1卫 2700元月 电梯房 9",
+          id: "2",
+          roomid: "e11fdf33-b3ee-11ec-a092-00163e0c2d78",
+          userid: "e11fdf33-b3ee-11ec-a092-00163e0c2d78",
           mobile: "1333888888",
-          date: "2016-05-03 22:22:00",
-           datenum:"1天", datenum:"1天",
+          money: "1800",
+          endtime: "2022/04/06 12:12:00",
         },
         {
-          id:"3",
-          houseid:"松南城芙蓉苑 3室2厅1卫 2700元月 电梯房 9",
+          id: "3",
+          roomid: "e11fdf33-b3ee-11ec-a092-00163e0c2d78",
+          userid: "e11fdf33-b3ee-11ec-a092-00163e0c2d78",
           mobile: "1333888888",
-          date: "2016-05-03 22:22:00",
-           datenum:"1天",
+          money: "1800",
+          endtime: "2022/04/06 12:12:00",
         },
         {
-          id:"4",
-          houseid:"松南城芙蓉苑 3室2厅1卫 2700元月 电梯房 9",
+          id: "4",
+          roomid: "e11fdf33-b3ee-11ec-a092-00163e0c2d78",
+          userid: "e11fdf33-b3ee-11ec-a092-00163e0c2d78",
           mobile: "1333888888",
-          date: "2016-05-03 22:22:00",
-           datenum:"1天",
+          money: "1800",
+          endtime: "2022/04/06 12:12:00",
         },
       ],
     };
   },
   methods: {
-    edit() {
-      this.$emit("show", true);
+    showRoom() {
+      this.$emit("changeShowHandle", 1);
     },
-    show() {
-      this.$emit("showImage");
+    showLessee() {
+      this.$emit("changeShowHandle", 2);
     },
+    continueRoom(){
+      this.$emit("changeShowHandle", 0);
+    }
   },
 };
 </script>

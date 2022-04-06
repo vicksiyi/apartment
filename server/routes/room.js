@@ -5,14 +5,6 @@ const passport = require('passport');
 const utils = require('../utils/utils');
 const keys = require('../config/keys');
 
-// $routes /room/getrooms
-// @desc 获取公寓列表[游客]
-// @access private
-router.get('/user/getrooms', async (req, res) => {
-    // 全部
-
-})
-
 // $routes /room/usergetrooms
 // @desc 获取公寓列表[用户]
 // @access private

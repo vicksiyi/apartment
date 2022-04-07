@@ -1,6 +1,6 @@
 <template>
   <div class="mine">
-    <el-descriptions class="margin-top" :column="3" :size="size" border>
+    <el-descriptions class="margin-top" :column="3" border>
       <el-descriptions-item>
         <template slot="label">
           <i class="el-icon-mobile-phone"></i>

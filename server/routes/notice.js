@@ -46,4 +46,29 @@ router.put('/clearnotice/:id', passport.authenticate('jwt', { session: false }),
     });
     res.send({ code: 200 })
 })
+
+// $routes /notice/getusernotice/:id
+// @desc 获取通知[用户]
+// @access private
+router.get('/getusernotice', passport.authenticate('jwt', { session: false }), async (req, res) => {
+    const { uuid } = req.user;
+    let _result = await notice.getusernotice(uuid).catch(err => {
+        res.send({ code: 400, msg: "未知错误" })
+        throw Error(err);
+    });
+    res.send({ code: 200, data: _result });
+})
+
+// $routes /notice/doneusernotice/:id
+// @desc 收到通知
+// @access private
+router.put('/doneusernotice/:id', passport.authenticate('jwt', { session: false }), async (req, res) => {
+    const { id } = req.params;
+    const { uuid } = req.user;
+    let _result = await notice.doneusernotice(uuid, id).catch(err => {
+        res.send({ code: 400, msg: "未知错误" })
+        throw Error(err);
+    });
+    res.send({ code: 200 });
+})
 module.exports = router;

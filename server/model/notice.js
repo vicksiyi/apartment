@@ -16,6 +16,17 @@ class Notice extends Handle {
         const sql = `update notices set status = 0 where id = ${id}`;
         return super.commit(sql);
     }
+    getusernotice(user_uuid) {
+        const sql = `select * from notices where id 
+        not in (select urn.notice_id from user_rel_notice urn 
+            where urn.user_uuid = '${user_uuid}') and status = 1;`;
+        return super.commit(sql);
+    }
+    doneusernotice(uuid, id) {
+        const sql = `insert into user_rel_notice(user_uuid, notice_id)
+        values('${uuid}',${id})`;
+        return super.commit(sql);
+    }
 }
 const notice = new Notice();
 module.exports = notice;

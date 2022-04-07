@@ -18,24 +18,48 @@ import Service from "./Content/Service";
 import ServiceHistory from "./Content/ServiceHistory";
 import Auth from "./Content/Auth";
 import EditPassword from "./Content/EditPassword";
+import { getusernotice, doneusernotice } from "@/api/notice/index";
+import form from "@/utils/form";
+import loading from "@/utils/loading";
 export default {
   name: "MineDetail",
   components: { Mine, Service, ServiceHistory, EditPassword, Auth },
   data() {
     return {};
   },
+  methods: {
+    async getNotices() {
+      let _this = this;
+      let _loading = loading.start(this);
+      let _result = (await getusernotice()).data;
+      if (_result.code != 200) this.$message.error(_result.msg);
+      else {
+        for (let i = 0; i < _result.data.length; i++) {
+          const h = this.$createElement;
+          this.$notify({
+            title: _result.data[i].title,
+            message: h("i", { style: "color: teal" }, _result.data[i].content),
+            duration: 0,
+            onClose() {
+              _this.doneNotice(_result.data[i].id, _result.data[i].title);
+            },
+          });
+        }
+      }
+      loading.end(_loading);
+    },
+    async doneNotice(id, title) {
+      let _loading = loading.start(this);
+      let _result = (await doneusernotice({ id: id })).data;
+      if (_result.code != 200) this.$message.error(_result.msg);
+      else {
+        this.$message({ type: "success", message: `成功收到 ${title}` });
+      }
+      loading.end(_loading);
+    },
+  },
   mounted() {
-    const h = this.$createElement;
-
-    this.$notify({
-      title: "标题名称",
-      message: h(
-        "i",
-        { style: "color: teal" },
-        "这是提示文案这是提示文案这是提示文案这是提示文案这是提示文案这是提示文案这是提示文案这是提示文案"
-      ),
-      duration: 0,
-    });
+    this.getNotices();
   },
 };
 </script>

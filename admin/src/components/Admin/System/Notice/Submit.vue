@@ -19,7 +19,6 @@
           placeholder="请输入通知内容"
           v-model="ruleForm.content"
           :rows="5"
-          show-word-limit
         ></el-input>
       </el-form-item>
       <el-form-item>

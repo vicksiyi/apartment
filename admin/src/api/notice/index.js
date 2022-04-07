@@ -23,3 +23,20 @@ export const clearnotice = function (parms) {
         method: "put"
     })
 }
+
+// 获取【用户】
+export const getusernotice = function (parms) {
+    return axios.request({
+        url: `/api/notice/getusernotice`
+    })
+}
+
+
+// 收到通知【用户】
+export const doneusernotice = function (parms) {
+    return axios.request({
+        url: `/api/notice/doneusernotice/${parms.id}`,
+        method: "put"
+    })
+}
+

@@ -13,6 +13,8 @@
     <div class="page">
       <el-pagination
         background
+        :current-page="page"
+        @current-change="pageChange"
         layout="prev, pager, next"
         :total="relRooms.length"
       >
@@ -68,6 +70,7 @@ export default {
   computed: {
     ...mapState({
       relRooms: (state) => state.lessee.relRooms,
+      page: (state) => state.lessee.page,
     }),
   },
   data() {
@@ -91,6 +94,9 @@ export default {
       this.drawer = false;
       if (update) this.update = !this.update;
     },
+    pageChange(page){
+      this.$store.commit("lessee/updatePage", page);
+    }
   },
 };
 </script>

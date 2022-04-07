@@ -20,3 +20,10 @@ export const usergetroomtype = function (parms) {
         url: `/api/room/usergetroomtype/${parms.roomId}`,
     })
 }
+
+// 获取个人房屋信息
+export const getuserrooms = function (parms) {
+    return axios.request({
+        url: `/api/user/getuserrooms`,
+    })
+}

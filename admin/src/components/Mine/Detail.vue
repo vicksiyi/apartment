@@ -1,7 +1,7 @@
 <template>
   <div class="mine-detail">
     <el-tabs tab-position="left">
-      <el-tab-pane label="个人信息"><Mine></Mine></el-tab-pane>
+      <el-tab-pane label="租房信息"><Mine></Mine></el-tab-pane>
       <el-tab-pane label="维修报告"><Service></Service></el-tab-pane>
       <el-tab-pane label="维修记录"
         ><ServiceHistory></ServiceHistory

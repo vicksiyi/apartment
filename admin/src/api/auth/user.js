@@ -23,3 +23,11 @@ export const getpersondetail = function (parms) {
         url: '/api/user/getpersondetail'
     })
 }
+
+export const updatepasswd = function (parms) {
+    return axios.request({
+        url: '/api/user/updatepasswd',
+        method: "post",
+        data: parms.data
+    })
+}

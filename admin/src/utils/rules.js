@@ -49,4 +49,9 @@ module.exports = {
             { required: true, message: "请输入通知内容", trigger: "blur" },
         ],
     },
+    editpassRuleForm: {
+        newpasswd: "",
+        oldpasswd: "",
+        checkpasswd: "",
+    }
 }

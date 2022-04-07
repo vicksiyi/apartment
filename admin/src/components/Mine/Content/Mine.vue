@@ -1,134 +1,73 @@
 <template>
   <div class="mine">
-    <el-descriptions class="margin-top" :column="3" border>
-      <el-descriptions-item>
-        <template slot="label">
-          <i class="el-icon-mobile-phone"></i>
-          手机号
+    <el-table :data="rooms" height="500" v-loading="loading" border style="width: 100%">
+      <el-table-column prop="title" label="房屋名称" width="180">
+      </el-table-column>
+      <el-table-column label="租金" width="180">
+        <template slot-scope="scope">
+          <el-tag size="small">{{ scope.row.money }}元/月</el-tag></template
+        >
+      </el-table-column>
+      <el-table-column prop="address" label="地址"> </el-table-column>
+      <el-table-column label="续租情况">
+        <template slot-scope="scope">
+          <div v-if="scope.row.continues.length" class="detail">
+            <el-timeline>
+              <el-timeline-item
+                v-for="(itemChilren, index) in scope.row.continues"
+                :key="itemChilren.id"
+                size="large"
+                :color="index == 0 ? '#67C23A' : ''"
+                icon="el-icon-star-off"
+                :timestamp="itemChilren.time"
+                placement="top"
+              >
+                <el-card>
+                  <h4>{{ itemChilren.msg }}</h4>
+                  <p>{{ itemChilren.startTime }}至{{ itemChilren.endTime }}</p>
+                  <el-tag type="success">{{ itemChilren.money }}</el-tag>
+                </el-card>
+              </el-timeline-item>
+            </el-timeline>
+          </div>
+          <div v-else>
+            <el-empty description="暂无续租"></el-empty>
+          </div>
         </template>
-        1333888888
-      </el-descriptions-item>
-      <el-descriptions-item>
-        <template slot="label">
-          <i class="el-icon-location-outline"></i>
-          当前房间
-        </template>
-        龙门西街xxx号xxx房间
-      </el-descriptions-item>
-      <el-descriptions-item>
-        <template slot="label">
-          <i class="el-icon-time"></i>
-          距离到期
-        </template>
-        <el-tag size="small" type="success">120天</el-tag>
-      </el-descriptions-item>
-      <el-descriptions-item>
-        <template slot="label">
-          <i class="el-icon-tickets"></i>
-          房租
-        </template>
-        <el-tag size="small">1200元/月</el-tag>
-      </el-descriptions-item>
-      <el-descriptions-item>
-        <template slot="label">
-          <i class="el-icon-office-building"></i>
-          租期情况
-        </template>
-        <div class="detail">
-          <el-timeline>
-            <el-timeline-item
-              size="large"
-              color="#67C23A"
-              icon="el-icon-star-off"
-              timestamp="2018/4/12"
-              placement="top"
-            >
-              <el-card>
-                <h4>更新 Github 模板</h4>
-                <p>王小虎 提交于 2018/4/12 20:46</p>
-              </el-card>
-            </el-timeline-item>
-            <el-timeline-item timestamp="2018/4/3" placement="top">
-              <el-card>
-                <h4>更新 Github 模板</h4>
-                <!-- <p>王小虎 提交于 2018/4/3 20:46</p> -->
-              </el-card>
-            </el-timeline-item>
-
-            <el-timeline-item timestamp="2018/4/2" placement="top">
-              <el-card>
-                <h4>更新 Github 模板</h4>
-                <p>王小虎 提交于 2018/4/2 20:46</p>
-              </el-card>
-            </el-timeline-item>
-            <el-timeline-item timestamp="2018/4/2" placement="top">
-              <el-card>
-                <h4>更新 Github 模板</h4>
-                <p>王小虎 提交于 2018/4/2 20:46</p>
-              </el-card>
-            </el-timeline-item>
-            <el-timeline-item timestamp="2018/4/2" placement="top">
-              <el-card>
-                <h4>更新 Github 模板</h4>
-                <p>王小虎 提交于 2018/4/2 20:46</p>
-              </el-card>
-            </el-timeline-item>
-            <el-timeline-item timestamp="2018/4/2" placement="top">
-              <el-card>
-                <h4>更新 Github 模板</h4>
-                <p>王小虎 提交于 2018/4/2 20:46</p>
-              </el-card>
-            </el-timeline-item>
-            <el-timeline-item timestamp="2018/4/2" placement="top">
-              <el-card>
-                <h4>更新 Github 模板</h4>
-                <p>王小虎 提交于 2018/4/2 20:46</p>
-              </el-card>
-            </el-timeline-item>
-            <el-timeline-item timestamp="2018/4/2" placement="top">
-              <el-card>
-                <h4>更新 Github 模板</h4>
-                <p>王小虎 提交于 2018/4/2 20:46</p>
-              </el-card>
-            </el-timeline-item>
-            <el-timeline-item timestamp="2018/4/2" placement="top">
-              <el-card>
-                <h4>更新 Github 模板</h4>
-                <p>王小虎 提交于 2018/4/2 20:46</p>
-              </el-card>
-            </el-timeline-item>
-            <el-timeline-item timestamp="2018/4/2" placement="top">
-              <el-card>
-                <h4>更新 Github 模板</h4>
-                <p>王小虎 提交于 2018/4/2 20:46</p>
-              </el-card>
-            </el-timeline-item>
-            <el-timeline-item timestamp="2018/4/2" placement="top">
-              <el-card>
-                <h4>更新 Github 模板</h4>
-                <p>王小虎 提交于 2018/4/2 20:46</p>
-              </el-card>
-            </el-timeline-item>
-            <el-timeline-item timestamp="2018/4/2" placement="top">
-              <el-card>
-                <h4>更新 Github 模板</h4>
-                <p>王小虎 提交于 2018/4/2 20:46</p>
-              </el-card>
-            </el-timeline-item>
-          </el-timeline>
-        </div>
-      </el-descriptions-item>
-    </el-descriptions>
+      </el-table-column>
+    </el-table>
   </div>
 </template>
 
 <script>
+import { getuserrooms } from "@/api/room/user_room";
 export default {
   name: "Mine",
   data() {
-    return {};
+    return {
+      drawer: false,
+      direction: "rtl",
+      rooms: [],
+      loading: false,
+    };
   },
-  methods: {},
+  methods: {
+    show() {
+      this.drawer = true;
+    },
+    async getData() {
+      this.loading = true;
+      let _result = (await getuserrooms()).data;
+      if (_result.code != 200) this.$message.error(_result.msg);
+      else {
+        this.rooms = _result.data;
+      }
+      this.loading = false;
+    },
+  },
+  mounted() {
+    this.getData();
+  },
 };
 </script>
 
@@ -139,7 +78,7 @@ export default {
   padding-right: 20px;
 }
 .detail {
-  max-height: 500px;
+  max-height: 200px;
   overflow-y: scroll;
 }
 </style>

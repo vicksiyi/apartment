@@ -8,24 +8,24 @@
       label-width="100px"
       class="demo-ruleForm"
     >
-      <el-form-item label="原密码" prop="oldPass">
+      <el-form-item label="原密码" prop="oldpasswd">
         <el-input
           type="password"
-          v-model="ruleForm.oldPass"
+          v-model="ruleForm.oldpasswd"
           autocomplete="off"
         ></el-input>
       </el-form-item>
-      <el-form-item label="新密码" prop="newPass">
+      <el-form-item label="新密码" prop="newpasswd">
         <el-input
           type="password"
-          v-model="ruleForm.newPass"
+          v-model="ruleForm.newpasswd"
           autocomplete="off"
         ></el-input>
       </el-form-item>
-      <el-form-item label="确认密码" prop="checkPass">
+      <el-form-item label="确认密码" prop="checkpasswd">
         <el-input
           type="password"
-          v-model="ruleForm.checkPass"
+          v-model="ruleForm.checkpasswd"
           autocomplete="off"
         ></el-input>
       </el-form-item>
@@ -42,28 +42,34 @@
 </template>
 
 <script>
+import { editpassRuleForm } from "@/utils/rules";
+import { toJson } from "@/utils/switch";
+import { updatepasswd } from "@/api/auth/user";
+import md5 from "js-md5";
+import form from "@/utils/form";
+import loading from "@/utils/loading";
 export default {
   name: "EditPassword",
   data() {
     const checkPassValidator = (rule, value, callback) => {
       if (value === "") {
         callback(new Error("请再次输入密码"));
-      } else if (value !== this.ruleForm.newPass) {
+      } else if (value !== this.ruleForm.newpasswd) {
         callback(new Error("两次输入密码不一致!"));
       } else {
         callback();
       }
     };
     return {
-      ruleForm: {
-        pass: "",
-        checkPass: "",
-        age: "",
-      },
+      ruleForm: toJson(editpassRuleForm),
       rules: {
-        oldPass: [{ required: true, message: "请输入原密码", trigger: "blur" }],
-        newPass: [{ required: true, message: "请输入新密码", trigger: "blur" }],
-        checkPass: [
+        oldpasswd: [
+          { required: true, message: "请输入原密码", trigger: "blur" },
+        ],
+        newpasswd: [
+          { required: true, message: "请输入新密码", trigger: "blur" },
+        ],
+        checkpasswd: [
           { required: true, validator: checkPassValidator, trigger: "blur" },
         ],
       },
@@ -71,9 +77,23 @@ export default {
   },
   methods: {
     submitForm(formName) {
-      this.$refs[formName].validate((valid) => {
+      form.validate(this, formName).then(async (valid) => {
         if (valid) {
-          alert("submit!");
+          let _loadding = loading.start(this);
+          let data = Object.assign({}, this.ruleForm);
+          data.oldpasswd = md5(data.oldpasswd);
+          data.newpasswd = md5(data.newpasswd);
+          console.log(data);
+          let _result = (await updatepasswd({ data: data })).data;
+          if (_result.code != 200) this.$message.error(_result.msg);
+          else {
+            this.$message({
+              type: "success",
+              message: "修改成功",
+            });
+            this.ruleForm = toJson(editpassRuleForm);
+          }
+          loading.end(_loadding);
         } else {
           console.log("error submit!!");
           return false;

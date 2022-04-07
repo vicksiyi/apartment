@@ -25,6 +25,27 @@ class User extends Handle {
         }
         return super.commit(sql);
     }
+    // 获取个人房屋信息情况【首次】
+    getuserroom_first(uuid) {
+        const sql = `select urr.id,urr.room_uuid,urr.startTime,urr.endTime,
+        urr.money,urr.status,r.title,r.mobile,r.address 
+        from user_rel_room urr inner join rooms r on 
+        r.uuid = urr.room_uuid where urr.user_uuid 
+        = "${uuid}" order by urr.time desc;`;
+        return super.commit(sql);
+    }
+    // 获取个人房屋信息情况【续费】
+    getuserroom_continue(id) {
+        const sql = `select startTime,endTime,money,msg,time 
+        from user_rel_room_continue where user_rel_room_id = ${id};`;
+        return super.commit(sql);
+    }
+    // 更新密码
+    updatepasswd(uuid, passwd) {
+        const sql = `update users set passwd = '${passwd}' where uuid = '${uuid}'`;
+        console.log(sql);
+        return super.commit(sql);
+    }
 }
 const user = new User();
 module.exports = user;

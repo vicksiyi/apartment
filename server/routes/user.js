@@ -4,8 +4,10 @@ const passport = require('passport');
 const user = require('../model/user');
 const multer = require('multer');
 const check = require('../utils/check');
+const md5 = require("js-md5");
 const file = require('../utils/file');
 const uploadOss = require('../utils/upload');
+const utils = require('../utils/utils');
 const upload = multer({
     dest: __dirname + '/temp',
     limits: {
@@ -76,11 +78,60 @@ router.post('/putidcardimg', upload.single('image'), passport.authenticate('jwt'
 // $routes /user/putidcardimg
 // @desc 获取个人信息
 // @access private
-router.get('/getpersondetail', upload.single('image'), passport.authenticate('jwt', { session: false }), async (req, res) => {
+router.get('/getpersondetail', passport.authenticate('jwt', { session: false }), async (req, res) => {
     const { name, idcard, card_img_1, card_img_2 } = req.user;
     res.send({
         code: 200,
         data: { name, idcard, card_img_1, card_img_2 }
     })
+})
+
+
+const getformatdate = function (time) {
+    return utils.formatTimestamp(new Date(time).getTime()).split(" ")[0]
+}
+
+// $routes /user/getuserrooms
+// @desc 获取个人房屋
+// @access private
+router.get('/getuserrooms', passport.authenticate('jwt', { session: false }), async (req, res) => {
+    const { uuid } = req.user;
+    let _result = await user.getuserroom_first(uuid).catch(err => {
+        res.send({ code: 400, msg: "未知错误" });
+        throw Error(err)
+    });
+    _result = utils.toJson(_result);
+    for (let i = 0; i < _result.length; i++) {
+        let _temp = await user.getuserroom_continue(_result[i].id).catch(err => {
+            res.send({ code: 400, msg: "未知错误" });
+            throw Error(err)
+        });
+        _temp = utils.toJson(_temp);
+        _result[i].continues = _temp.map(value => {
+            value.time = utils.formatTimestamp(new Date(value.time).getTime());
+            value.startTime = getformatdate(value.startTime);
+            value.endTime = getformatdate(value.endTime);
+            return value;
+        });
+    }
+    res.send({ code: 200, data: _result });
+})
+
+// $routes /user/updatepasswd
+// @desc 修改密码
+// @access private
+router.post('/updatepasswd', passport.authenticate('jwt', { session: false }), async (req, res) => {
+    const { uuid, mobile, passwd } = req.user;
+    let { newpasswd, oldpasswd } = req.body;
+    newpasswd = md5(mobile + newpasswd);
+    if (md5(mobile + oldpasswd) != passwd) {
+        res.send({ code: 400, msg: "原密码错误" })
+    } else {
+        let _result = await user.updatepasswd(uuid, newpasswd).catch(err => {
+            res.send({ code: 400, msg: "未知错误" });
+            throw Error(err)
+        });
+        res.send({ code: 200 });
+    }
 })
 module.exports = router;

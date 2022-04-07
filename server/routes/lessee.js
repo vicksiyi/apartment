@@ -63,13 +63,22 @@ router.post('/addroomreluser', passport.authenticate('jwt', { session: false }),
 // @access private
 router.post('/continueroomreluser', passport.authenticate('jwt', { session: false }), async (req, res) => {
     if (req.user.identity != 1) res.status(401).send({ code: 401, msg: "没权限" });
-    const { id, startTime, endTime } = req.body;
-    lessee.insert_user_rel_room_continue({ id, startTime, endTime }).catch(err => {
+    const { id, money, msg } = req.body;
+    let { startTime, endTime } = req.body;
+    startTime = utils.formatTimestamp(new Date(startTime).getTime());
+    endTime = utils.formatTimestamp(new Date(endTime).getTime());
+    let result = await lessee.insert_user_rel_room_continue(
+        id, startTime, endTime, money, msg
+    ).catch(err => {
         res.send({ code: 400, msg: "未知错误" })
         throw Error(err);
     });
     res.send({ code: 200 })
 })
+
+const getformatdate = function (time) {
+    return utils.formatTimestamp(new Date(time).getTime()).split(" ")[0]
+}
 
 // $routes /lessee/getroomreluser
 // @desc 获取租户
@@ -81,11 +90,76 @@ router.get('/getroomreluser', passport.authenticate('jwt', { session: false }), 
         throw Error(err);
     });
     _result = utils.toJson(_result);
-    _result = _result.map(value => {
-        value.startTime = utils.formatTimestamp(new Date(value.startTime).getTime()).split(" ")[0];
-        value.endTime = utils.formatTimestamp(new Date(value.endTime).getTime()).split(" ")[0];
+    for (let i = 0; i < _result.length; i++) {
+        let _endTime = await lessee.query_room_rel_user_continue_last_time(_result[i].id).catch(err => {
+            res.send({ code: 400, msg: "未知错误" })
+            throw Error(err);
+        });
+        _endTime = utils.toJson(_endTime);
+        _result[i].startTime = getformatdate(_result[i].startTime)
+        if (_endTime.length > 0) {
+            _result[i].endTime = getformatdate(_endTime[0].endTime);
+        } else {
+            _result[i].endTime = getformatdate(_result[i].endTime);
+        }
+    }
+    res.send({ code: 200, data: _result })
+})
+
+// $routes /lessee/getcontinuedetail/:id
+// @desc 获取续租情况
+// @access private
+router.get('/getcontinuedetail/:id', passport.authenticate('jwt', { session: false }), async (req, res) => {
+    if (req.user.identity != 1) res.status(401).send({ code: 401, msg: "没权限" });
+    const { id } = req.params;
+    let _result = await lessee.query_continue_detail(id).catch(err => {
+        res.send({ code: 400, msg: "未知错误" })
+        throw Error(err);
+    });
+    _result.map(value => {
+        value.startTime = getformatdate(value.startTime);
+        value.endTime = getformatdate(value.endTime);
+        value.time = utils.formatTimestamp(new Date(value.time).getTime());
         return value;
     })
     res.send({ code: 200, data: _result })
+})
+
+// $routes /lessee/getcontinuedetail/:id
+// @desc 获取续租情况
+// @access private
+router.put('/endlessee/:id', passport.authenticate('jwt', { session: false }), async (req, res) => {
+    if (req.user.identity != 1) res.status(401).send({ code: 401, msg: "没权限" });
+    const { id } = req.params;
+    transaction.start().catch(err => {
+        res.send({ code: 400, msg: "未知错误" }); throw err;
+    }); // 开启事务
+    let sql = `update user_rel_room set status = 0 where id = ${id}`;
+    transaction.insert(sql).then(() => {
+        return new Promise((resolve, reject) => {
+            sql = `select room_uuid from user_rel_room where id = ${id}`;
+            transaction.insert(sql).then((result) => {
+                resolve(result[0].room_uuid);
+            }).catch((error) => reject(error));
+        })
+    }).then((roomid) => {
+        return new Promise((resolve, reject) => {
+            sql = `update rooms set status = 1 where uuid='${roomid}'`;
+            // 更新状态
+            transaction.insert(sql).then((orderLast) => {
+                resolve();
+            }).catch((error) => reject(error));
+        })
+    }).then(() => {
+        // 提交事务
+        return new Promise((resolve, reject) => {
+            transaction.commit().then(() => {
+                res.send({ code: 200 })
+            }).catch((error) => reject(error));
+        })
+    }).catch(err => {
+        res.send({ code: 400, msg: '退租失败' })
+        transaction.rollback(err);
+    });
 })
 module.exports = router;

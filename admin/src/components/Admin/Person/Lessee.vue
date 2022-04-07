@@ -11,7 +11,11 @@
       <Show :update="update" @changeShowHandle="changeShowHandle"></Show>
     </el-row>
     <div class="page">
-      <el-pagination background layout="prev, pager, next" :total="relRooms.length">
+      <el-pagination
+        background
+        layout="prev, pager, next"
+        :total="relRooms.length"
+      >
       </el-pagination>
     </div>
     <el-drawer
@@ -22,6 +26,8 @@
           ? '公寓信息'
           : showHandle == 2
           ? '租户信息'
+          : showHandle == 3
+          ? '续租情况'
           : '续租'
       "
       :size="600"
@@ -31,11 +37,12 @@
       <Submit
         @closeDrawer="closeDrawer"
         :showHandle="showHandle"
-        v-if="showHandle == 0 || showHandle == 4"
+        v-if="showHandle == 0"
       ></Submit>
       <ShowRoom v-else-if="showHandle == 1"></ShowRoom>
       <ShowLessee v-else-if="showHandle == 2"></ShowLessee>
-      <ShowContinueRoom v-else></ShowContinueRoom>
+      <ShowContinueRoom v-else-if="showHandle == 3"></ShowContinueRoom>
+      <Continue @closeDrawer="closeDrawer" v-else></Continue>
     </el-drawer>
   </div>
 </template>
@@ -47,9 +54,17 @@ import Submit from "./Lessee/Submit";
 import ShowRoom from "./Lessee/Show/Room";
 import ShowLessee from "./Lessee/Show/Lessee";
 import ShowContinueRoom from "./Lessee/Show/ContinueRoom";
+import Continue from "./Lessee/Continue";
 export default {
   name: "Person",
-  components: { Show, Submit, ShowRoom, ShowLessee, ShowContinueRoom },
+  components: {
+    Show,
+    Submit,
+    ShowRoom,
+    ShowLessee,
+    ShowContinueRoom,
+    Continue,
+  },
   computed: {
     ...mapState({
       relRooms: (state) => state.lessee.relRooms,

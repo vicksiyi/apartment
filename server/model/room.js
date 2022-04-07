@@ -40,6 +40,11 @@ class Room extends Handle {
         and rs.uuid = '${roomId}';`;
         return super.commit(sql);
     }
+    query_one_room(roomId) {
+        const sql = `select rs.*,i.url from rooms rs right join room_rel_image i 
+        on i.room_uuid = rs.uuid where rs.uuid = '${roomId}';`;
+        return super.commit(sql);
+    }
     user_query_one_room_type(roomId) {
         const sql = `select rt.title from room_rel_room_type rrrt 
         inner join room_type rt on 

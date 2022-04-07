@@ -3,6 +3,8 @@ export default {
     state: {
         relRooms: [],
         page: 1,
+        continueId: -1,
+        roomId: ""
     },
     mutations: {
         updateRelRooms(state, val) {
@@ -10,6 +12,12 @@ export default {
         },
         updatePage(state, val) {
             state.page = val;
-        }
+        },
+        updateContinueId(state, val) {
+            state.continueId = val;
+        },
+        updateRoomId(state, val) {
+            state.roomId = val;
+        },
     }
 }

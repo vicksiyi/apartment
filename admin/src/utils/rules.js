@@ -31,5 +31,12 @@ module.exports = {
         startTime: "",
         endTime: "",
         money: 0,
+        msg: ""
+    },
+    lesseeContinueRuleForm: {
+        startTime: "",
+        endTime: "",
+        money: 0,
+        msg: ""
     }
 }

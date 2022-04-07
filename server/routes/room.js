@@ -41,6 +41,30 @@ router.get('/usergetroom/:roomId', passport.authenticate('jwt', { session: false
     res.send({ code: 200, data: data })
 })
 
+// $routes /room/getroom/:roomId
+// @desc 获取某个公寓详细信息[管理员]
+// @access private
+router.get('/getroom/:roomId', passport.authenticate('jwt', { session: false }), async (req, res) => {
+    if (req.user.identity != 1) res.status(401).send({ code: 401, msg: "没权限" });
+    const { roomId } = req.params;
+    let _result = await room.query_one_room(roomId).catch(err => {
+        res.send({ code: 400, msg: "未知错误" })
+        throw Error(err);
+    });
+    _result = utils.toJson(_result);
+    let data = null;
+    for (let i = 0; i < _result.length; i++) {
+        if (!data) {
+            data = Object.assign(_result[i], {});
+            data.images = [data.url];
+        } else if (_result[i].uuid == roomId) {
+            data.images.push(_result[i].url);
+        }
+    }
+    data.images = [...new Set(data.images)];
+    res.send({ code: 200, data: data })
+})
+
 // $routes /room/usergetroomtype/:roomId
 // @desc 获取某个公寓详细信息[用户]
 // @access private

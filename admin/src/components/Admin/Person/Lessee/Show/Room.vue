@@ -1,5 +1,5 @@
 <template>
-  <div class="room">
+  <div class="room" v-loading="loading">
     <div class="item">
       <div class="item-tag">
         <div class="first-tag"></div>
@@ -8,7 +8,7 @@
       <div class="img-list">
         <el-row :guter="20">
           <el-col
-            v-for="item in srcList"
+            v-for="item in room.images"
             :key="item.id"
             :span="6"
             style="margin: 10px"
@@ -16,7 +16,7 @@
             <el-image
               style="width: 120px; height: 120px"
               :src="item"
-              :preview-src-list="srcList"
+              :preview-src-list="room.images"
             ></el-image>
           </el-col>
         </el-row>
@@ -32,46 +32,44 @@
         :column="1"
         :size="size"
         border
-        style="margin-top:20px;"
+        style="margin-top: 20px"
       >
         <el-descriptions-item>
           <template slot="label">
             <i class="el-icon-user"></i>
             标题
           </template>
-          新净江景3房）保养靓仔 家私家电齐全 看房方便
+          {{ room.title }}
         </el-descriptions-item>
         <el-descriptions-item>
           <template slot="label">
             <i class="el-icon-mobile-phone"></i>
             联系人
           </template>
-          1333777777
+          {{ room.mobile }}
         </el-descriptions-item>
         <el-descriptions-item>
           <template slot="label">
             <i class="el-icon-location-outline"></i>
             居住地
           </template>
-          锦绣银湾 (番禺 大石)
+          {{ room.address }}
         </el-descriptions-item>
         <el-descriptions-item>
           <template slot="label">
             <i class="el-icon-tickets"></i>
             租金
           </template>
-          <el-tag size="small">>1800</el-tag>
+          <el-tag size="small">{{
+            showMoney(room.startMoney, room.endMoney)
+          }}</el-tag>
         </el-descriptions-item>
         <el-descriptions-item>
           <template slot="label">
             <i class="el-icon-office-building"></i>
             描述
           </template>
-          如需了解更多房源信息，请点击我头像进入店铺咨询更多
-          锦绣银湾户型：3室2厅1厨2卫 1、这是锦绣银湾目前性价比非常高的一套房源
-          2、低于市场价很多，业主非常诚心出租
-          3、小区配套齐全，生活方便，交通便利
-          4、房况保养很好，干净整齐，家私齐全 5、随时带您看房
+          {{ room.msg }}
         </el-descriptions-item>
       </el-descriptions>
     </div>
@@ -79,21 +77,45 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
+import { getroom } from "@/api/lessee/index";
 export default {
   name: "Room",
+  computed: {
+    ...mapState({
+      roomId: (state) => state.lessee.roomId,
+    }),
+  },
+  watch: {
+    roomId() {
+      this.getData();
+    },
+  },
   data() {
     return {
-      srcList: [
-        "https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg",
-        "https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg",
-        "https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg",
-        "https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg",
-        "https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg",
-        "https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg",
-      ],
+      room: {},
+      loading: false,
     };
   },
-  methods: {},
+  methods: {
+    async getData() {
+      this.loading = true;
+      let _result = (await getroom({ roomId: this.roomId })).data;
+      if (_result.code != 200) this.$message.error(_result.msg);
+      else this.room = _result.data;
+      this.loading = false;
+    },
+    showMoney(start, end) {
+      if (start == 0 && end == 0) return "不限";
+      else if (start == 0) return "<" + end;
+      else if (end == 0) return ">" + start;
+      else if (start == end) return start;
+      else return start + "-" + end;
+    },
+  },
+  mounted() {
+    this.getData();
+  },
 };
 </script>
 

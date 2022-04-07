@@ -8,10 +8,10 @@
       >
     </el-row>
     <el-row style="margin-top: 20px" :guter="20">
-      <Show @changeShowHandle="changeShowHandle"></Show>
+      <Show :update="update" @changeShowHandle="changeShowHandle"></Show>
     </el-row>
     <div class="page">
-      <el-pagination background layout="prev, pager, next" :total="1000">
+      <el-pagination background layout="prev, pager, next" :total="relRooms.length">
       </el-pagination>
     </div>
     <el-drawer
@@ -29,6 +29,7 @@
       :direction="direction"
     >
       <Submit
+        @closeDrawer="closeDrawer"
         :showHandle="showHandle"
         v-if="showHandle == 0 || showHandle == 4"
       ></Submit>
@@ -40,6 +41,7 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
 import Show from "./Lessee/Show";
 import Submit from "./Lessee/Submit";
 import ShowRoom from "./Lessee/Show/Room";
@@ -48,11 +50,17 @@ import ShowContinueRoom from "./Lessee/Show/ContinueRoom";
 export default {
   name: "Person",
   components: { Show, Submit, ShowRoom, ShowLessee, ShowContinueRoom },
+  computed: {
+    ...mapState({
+      relRooms: (state) => state.lessee.relRooms,
+    }),
+  },
   data() {
     return {
       drawer: false,
       direction: "rtl",
       showHandle: 0,
+      update: false,
     };
   },
   methods: {
@@ -63,6 +71,10 @@ export default {
     changeShowHandle(val) {
       this.drawer = true;
       this.showHandle = val;
+    },
+    closeDrawer(update = false) {
+      this.drawer = false;
+      if (update) this.update = !this.update;
     },
   },
 };

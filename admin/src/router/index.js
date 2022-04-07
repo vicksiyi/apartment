@@ -68,11 +68,6 @@ export default new Router({
           component: () => import("@/components/Admin/Person/Lessee")
         },
         {
-          path: '/admin/person/money',
-          name: "Money",
-          component: () => import("@/components/Admin/Person/Money")
-        },
-        {
           path: '/admin/system/notice',
           name: "Notice",
           component: () => import("@/components/Admin/System/Notice")

@@ -1,12 +1,21 @@
 <template>
   <div class="device-type">
-    <el-table :data="tableData" height="400" border style="width: 100%">
+    <el-table
+      :data="relRooms"
+      v-loading="loading"
+      height="400"
+      border
+      style="width: 100%"
+    >
       <el-table-column prop="id" label="序号" width="50"> </el-table-column>
-      <el-table-column prop="roomid" label="房间Id"> </el-table-column>
-      <el-table-column prop="userid" label="租户Id"> </el-table-column>
-      <el-table-column prop="mobile" label="联系方式" width="120"> </el-table-column>
-      <el-table-column prop="starttime" label="入住时间" width="120"> </el-table-column>
-      <el-table-column prop="endtime" label="到期时间" width="120"> </el-table-column>
+      <el-table-column prop="room_uuid" label="房间Id"> </el-table-column>
+      <el-table-column prop="user_uuid" label="租户Id"> </el-table-column>
+      <el-table-column prop="mobile" label="联系方式" width="120">
+      </el-table-column>
+      <el-table-column prop="startTime" label="入住时间" width="120">
+      </el-table-column>
+      <el-table-column prop="endTime" label="到期时间" width="120">
+      </el-table-column>
       <el-table-column label="租金/月" width="100">
         <template slot-scope="scope">
           <el-tag type="success" effect="dark"> {{ scope.row.money }} </el-tag>
@@ -17,7 +26,7 @@
           <el-tag type="danger" effect="dark"> 是 </el-tag>
         </template>
       </el-table-column>
-      <el-table-column label="查看" width="220">
+      <el-table-column label="查看" width="240">
         <template>
           <el-button type="success" @click="showRoom" size="mini"
             >公寓</el-button
@@ -41,48 +50,29 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
+import { getroomreluser } from "@/api/lessee/index";
 export default {
   name: "Show",
+  props: {
+    update: {
+      type: Boolean,
+      default: false,
+    },
+  },
+  watch: {
+    update() {
+      this.getData();
+    },
+  },
+  computed: {
+    ...mapState({
+      relRooms: (state) => state.lessee.relRooms,
+    }),
+  },
   data() {
     return {
-      tableData: [
-        {
-          id: "1",
-          roomid: "e11fdf33-b3ee-11ec-a092-00163e0c2d78",
-          userid: "e11fdf33-b3ee-11ec-a092-00163e0c2d78",
-          mobile: "1333888888",
-          money: "1800",
-          starttime:"2022/01/06",
-          endtime: "2022/04/06",
-        },
-        {
-          id: "2",
-          roomid: "e11fdf33-b3ee-11ec-a092-00163e0c2d78",
-          userid: "e11fdf33-b3ee-11ec-a092-00163e0c2d78",
-          mobile: "1333888888",
-          money: "1800",
-          starttime:"2022/01/06",
-          endtime: "2022/04/06",
-        },
-        {
-          id: "3",
-          roomid: "e11fdf33-b3ee-11ec-a092-00163e0c2d78",
-          userid: "e11fdf33-b3ee-11ec-a092-00163e0c2d78",
-          mobile: "1333888888",
-          money: "1800",
-          starttime:"2022/01/06",
-          endtime: "2022/04/06",
-        },
-        {
-          id: "4",
-          roomid: "e11fdf33-b3ee-11ec-a092-00163e0c2d78",
-          userid: "e11fdf33-b3ee-11ec-a092-00163e0c2d78",
-          mobile: "1333888888",
-          money: "1800",
-          starttime:"2022/01/06",
-          endtime: "2022/04/06",
-        },
-      ],
+      loading: false,
     };
   },
   methods: {
@@ -95,6 +85,18 @@ export default {
     continueRoom(type = 3) {
       this.$emit("changeShowHandle", type);
     },
+    async getData() {
+      this.loading = true;
+      let _result = (await getroomreluser()).data;
+      if (_result.code != 200) this.$message.error(_result.msg);
+      else {
+        this.$store.commit("lessee/updateRelRooms", _result.data);
+      }
+      this.loading = false;
+    },
+  },
+  mounted() {
+    this.getData();
   },
 };
 </script>

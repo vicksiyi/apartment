@@ -24,5 +24,12 @@ module.exports = {
         msg: "",
         address: "",
         status: 0,
+    },
+    lesseeRuleForm: {
+        roomid: "",
+        mobile: "",
+        startTime: "",
+        endTime: "",
+        money: 0,
     }
 }

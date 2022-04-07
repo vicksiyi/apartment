@@ -5,6 +5,7 @@ import header from './auth/header';
 import device from './room/device';
 import room from './room/room';
 import user_room from './room/user_room';
+import lessee from "./lessee/lessee";
 import createPersistedState from "vuex-persistedstate"
 
 // 引入持久化
@@ -15,7 +16,8 @@ export default new Vuex.Store({
         header,
         device,
         room,
-        user_room
+        user_room,
+        lessee
     },
     // 持久化操作
     plugins: [createPersistedState({

@@ -67,7 +67,7 @@
       </el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
-          <el-button type="warning" @click="edit(scope.$index)" size="mini"
+          <el-button :disabled="scope.row.status == 2" type="warning" @click="edit(scope.$index)" size="mini"
             >修改</el-button
           >
         </template>

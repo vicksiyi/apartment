@@ -83,12 +83,6 @@ export default {
           icon: "s-shop",
           children: [
             {
-              path: "/admin/person/money",
-              name: "money",
-              label: "租金管理",
-              url: "/admin/person/money",
-            },
-            {
               path: "/admin/person/lessee",
               name: "lessee",
               label: "租户管理",

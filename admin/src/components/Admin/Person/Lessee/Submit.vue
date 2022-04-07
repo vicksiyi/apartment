@@ -38,7 +38,7 @@
       <el-form-item label="公寓租金" prop="money" required>
         <el-input type="number" v-model="ruleForm.money"></el-input>
       </el-form-item>
-      <el-form-item label="备注" prop="msg" required>
+      <el-form-item label="备注" prop="msg">
         <el-input type="textarea" v-model="ruleForm.msg"></el-input>
       </el-form-item>
       <el-form-item>
@@ -51,6 +51,11 @@
 </template>
 
 <script>
+import { lesseeRuleForm } from "@/utils/rules";
+import { toJson } from "@/utils/switch";
+import { addroomreluser } from "@/api/lessee/index";
+import form from "@/utils/form";
+import loading from "@/utils/loading";
 export default {
   name: "Submit",
   data() {
@@ -63,14 +68,17 @@ export default {
         callback();
       }
     };
+    const checkMobile = function (rule, value, callback) {
+      if (value === "") {
+        callback(new Error("请输入手机号"));
+      } else if (!/^1[3456789]\d{9}$/.test(value)) {
+        callback(new Error("手机号格式不对"));
+      } else {
+        callback();
+      }
+    };
     return {
-      ruleForm: {
-        roomid: "",
-        mobile: "",
-        startTime: "",
-        endTime: "",
-        money: 0,
-      },
+      ruleForm: toJson(lesseeRuleForm),
       rules: {
         roomid: [{ required: true, message: "请输入公寓Id", trigger: "blur" }],
         startTime: [
@@ -89,13 +97,7 @@ export default {
             trigger: "change",
           },
         ],
-        mobile: [
-          {
-            required: true,
-            message: "请输入租客手机号",
-            trigger: "blur",
-          },
-        ],
+        mobile: [{ validator: checkMobile, trigger: "blur" }],
         money: [
           { required: true, message: "请输入租金" },
           { validator: checkMoney, trigger: "blur" },
@@ -105,10 +107,19 @@ export default {
   },
   methods: {
     add(formName) {
-      this.$refs[formName].validate((valid) => {
+      form.validate(this, formName).then(async (valid) => {
         if (valid) {
-          alert("submit!");
+          let _loading = loading.start(this);
+          let data = Object.assign({}, this.ruleForm);
+          let _result = (await addroomreluser({ data: data })).data;
+          if (_result.code != 200) this.$message.error(_result.msg);
+          else {
+            this.$message({ type: "success", message: "添加成功" });
+            this.$emit("closeDrawer", true);
+          }
+          loading.end(_loading);
         } else {
+          console.log("error submit!!");
           return false;
         }
       });

@@ -10,12 +10,14 @@ import {
   Timeline, TimelineItem, Switch, Table, TableColumn, TimeSelect,
   Notification, Aside, Menu, MenuItem, Submenu, MenuItemGroup,
   Drawer, CheckboxGroup, Checkbox, Upload, Dialog, Popover, Loading,
-  Message, RadioGroup,DatePicker,Image,Empty
+  Message, RadioGroup, DatePicker, Image, Empty, Alert, MessageBox
 } from 'element-ui';
 Vue.config.productionTip = false
 Vue.prototype.$message = Message;
 Vue.prototype.$notify = Notification;
 Vue.prototype.$loading = Loading.service;
+Vue.prototype.$confirm = MessageBox.confirm;
+Vue.use(Alert);
 Vue.use(Empty);
 Vue.use(Image);
 Vue.use(RadioGroup);

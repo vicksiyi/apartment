@@ -1,9 +1,8 @@
 <template>
-  <div class="lessee">
+  <div class="lessee" v-loading="loading">
     <el-descriptions
       class="margin-top"
       :column="1"
-      :size="size"
       border
       style="margin-top: 20px"
     >
@@ -12,44 +11,65 @@
           <i class="el-icon-user"></i>
           真实姓名
         </template>
-        黄xx
+        {{ userinfo.name }}
       </el-descriptions-item>
       <el-descriptions-item>
         <template slot="label">
           <i class="el-icon-mobile-phone"></i>
-          联系电话
+          身份证号
         </template>
-        1333xxxxxxx
+        {{ userinfo.idcard }}
       </el-descriptions-item>
       <el-descriptions-item>
         <template slot="label">
           <i class="el-icon-s-finance"></i>
           身份证[正面]
         </template>
-        <el-image
-          src="https://cube.elemecdn.com/6/94/4d3ea53c084bad6931a56d5158a48jpeg.jpeg"
-        ></el-image>
+        <el-image :preview-src-list="[userinfo.card_img_1]" :src="userinfo.card_img_1"></el-image>
       </el-descriptions-item>
       <el-descriptions-item>
         <template slot="label">
           <i class="el-icon-s-finance"></i>
           身份证[反面]
         </template>
-        <el-image
-          src="https://cube.elemecdn.com/6/94/4d3ea53c084bad6931a56d5158a48jpeg.jpeg"
-        ></el-image>
+        <el-image :preview-src-list="[userinfo.card_img_2]" :src="userinfo.card_img_2"></el-image>
       </el-descriptions-item>
     </el-descriptions>
   </div>
 </template>
 
 <script>
+import { mapState } from "vuex";
+import { getuserinfo } from "@/api/lessee/index";
 export default {
   name: "Lessee",
-  data() {
-    return {};
+  computed: {
+    ...mapState({
+      userId: (state) => state.lessee.userId,
+    }),
   },
-  methods: {},
+  watch: {
+    userId() {
+      this.getData();
+    },
+  },
+  data() {
+    return { loading: false, userinfo: {} };
+  },
+  methods: {
+    async getData() {
+      this.loading = true;
+      let _result = (await getuserinfo({ user_uuid: this.userId })).data;
+      if (_result.code != 200) this.$message.error(_result.msg);
+      else {
+        this.userinfo = _result.data;
+      }
+      this.loading = false;
+    },
+  },
+  mounted() {
+    this.getData();
+  },
 };
 </script>
 

@@ -18,10 +18,11 @@ class Lessee extends Handle {
         where user_rel_room_id = ${id} order by time;`;
         return super.commit(sql);
     }
-    // end_lessee(id) {
-    //     const sql = `update user_rel_room set status = 0 where id = ${id}`;
-    //     return super.commit(sql);
-    // }
+    get_user_info(user_uuid) {
+        const sql = `select name,idcard,card_img_1,card_img_2 from users
+        where uuid = '${user_uuid}'`;
+        return super.commit(sql);
+    }
     insert_user_rel_room_continue(id, startTime, endTime, money, msg) {
         console.log(id, startTime, endTime, money, msg);
         const sql = `insert into user_rel_room_continue(user_rel_room_id,startTime,endTime,

@@ -162,4 +162,16 @@ router.put('/endlessee/:id', passport.authenticate('jwt', { session: false }), a
         transaction.rollback(err);
     });
 })
+
+// $routes /lessee/getuserinfo/:user_uuid
+// @desc 获取用户信息
+// @access private
+router.get('/getuserinfo/:user_uuid', passport.authenticate('jwt', { session: false }), async (req, res) => {
+    if (req.user.identity != 1) res.status(401).send({ code: 401, msg: "没权限" });
+    const { user_uuid } = req.params;
+    let _result = await lessee.get_user_info(user_uuid).catch(err => {
+        res.send({ code: 400, msg: "未知错误" }); throw err;
+    });
+    res.send({ code: 200, data: _result[0] });
+})
 module.exports = router;

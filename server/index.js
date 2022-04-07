@@ -7,6 +7,7 @@ const Auth = require('./routes/auth');
 const Room = require('./routes/room');
 const Upload = require('./routes/upload');
 const Lessee = require('./routes/lessee');
+const User = require('./routes/user');
 
 // // 使用body-parser
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -19,6 +20,7 @@ app.use('/api/auth', Auth);
 app.use('/api/room', Room);
 app.use('/api/upload', Upload);
 app.use('/api/lessee', Lessee);
+app.use('/api/user', User);
 
 app.listen(5000, () => {
     console.log('the server port running');

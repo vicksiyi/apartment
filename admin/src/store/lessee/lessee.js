@@ -4,7 +4,8 @@ export default {
         relRooms: [],
         page: 1,
         continueId: -1,
-        roomId: ""
+        roomId: "",
+        userId: ""
     },
     mutations: {
         updateRelRooms(state, val) {
@@ -18,6 +19,9 @@ export default {
         },
         updateRoomId(state, val) {
             state.roomId = val;
+        },
+        updateUserId(state, val) {
+            state.userId = val;
         },
     }
 }

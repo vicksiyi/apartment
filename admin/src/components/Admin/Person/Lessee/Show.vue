@@ -7,7 +7,11 @@
       border
       style="width: 100%"
     >
-      <el-table-column prop="id" label="序号" width="50"> </el-table-column>
+      <el-table-column label="序号" width="50">
+        <template slot-scope="scope">
+          <p>{{ (page - 1) * 10 + scope.$index + 1 }}</p>
+        </template>
+      </el-table-column>
       <el-table-column prop="room_uuid" label="房间Id"> </el-table-column>
       <el-table-column prop="user_uuid" label="租户Id"> </el-table-column>
       <el-table-column prop="mobile" label="联系方式" width="120">
@@ -39,7 +43,10 @@
       </el-table-column>
       <el-table-column label="查看" width="240">
         <template slot-scope="scope">
-          <el-button type="success" @click="showRoom(scope.row.room_uuid)" size="mini"
+          <el-button
+            type="success"
+            @click="showRoom(scope.row.room_uuid)"
+            size="mini"
             >公寓</el-button
           >
           <el-button
@@ -48,7 +55,12 @@
             size="mini"
             >续租</el-button
           >
-          <el-button type="" @click="showLessee" size="mini">租户</el-button>
+          <el-button
+            type=""
+            @click="showLessee(scope.row.user_uuid)"
+            size="mini"
+            >租户</el-button
+          >
         </template>
       </el-table-column>
       <el-table-column label="操作" width="180">
@@ -92,6 +104,7 @@ export default {
   computed: {
     ...mapState({
       relRooms: (state) => state.lessee.relRooms,
+      page: (state) => state.lessee.page,
     }),
   },
   data() {
@@ -104,7 +117,8 @@ export default {
       this.$store.commit("lessee/updateRoomId", id);
       this.$emit("changeShowHandle", 1);
     },
-    showLessee() {
+    showLessee(id) {
+      this.$store.commit("lessee/updateUserId", id);
       this.$emit("changeShowHandle", 2);
     },
     continueRoom(type, id) {

@@ -46,3 +46,10 @@ export const getroom = function (parms) {
         url: `/api/room/getroom/${parms.roomId}`,
     })
 }
+
+// 获取用户信息
+export const getuserinfo = function (parms) {
+    return axios.request({
+        url: `/api/lessee/getuserinfo/${parms.user_uuid}`,
+    })
+}

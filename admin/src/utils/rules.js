@@ -38,5 +38,15 @@ module.exports = {
         endTime: "",
         money: 0,
         msg: ""
-    }
+    },
+    noticeRuleForm: {
+        title: "",
+        content: "",
+    },
+    noticeRules: {
+        title: [{ required: true, message: "请输入通知标题", trigger: "blur" }],
+        content: [
+            { required: true, message: "请输入通知内容", trigger: "blur" },
+        ],
+    },
 }

@@ -27,6 +27,9 @@
 </template>
 
 <script>
+import { addmaintenancetype } from "@/api/room/maintenance";
+import form from "@/utils/form";
+import loading from "@/utils/loading";
 export default {
   name: "Submit",
   data() {
@@ -41,9 +44,18 @@ export default {
   },
   methods: {
     submitForm(formName) {
-      this.$refs[formName].validate((valid) => {
+      form.validate(this, formName).then(async (valid) => {
         if (valid) {
-          alert("submit!");
+          let _loading = loading.start(this);
+          let data = { title: this.ruleForm.title };
+          let _result = (await addmaintenancetype({ data: data })).data;
+          if (_result.code != 200) this.$message.error(_result.msg);
+          else {
+            this.ruleForm.title = "";
+            this.$message({ type: "success", message: "添加成功" });
+            this.$emit("closeDrawer");
+          }
+          loading.end(_loading);
         } else {
           console.log("error submit!!");
           return false;

@@ -4,7 +4,7 @@
       <el-col :span="8">
         <el-button type="primary" @click="show">添加类别</el-button>
         <el-card style="margin-top: 20px" class="box-card">
-          <Type></Type>
+          <Type :update="updateType"></Type>
         </el-card>
       </el-col>
       <el-col :span="16">
@@ -18,9 +18,8 @@
       :size="500"
       :visible.sync="drawer"
       :direction="direction"
-      :before-close="handleClose"
     >
-      <Submit></Submit>
+      <Submit @closeDrawer="closeDrawer"></Submit>
     </el-drawer>
   </div>
 </template>
@@ -36,11 +35,16 @@ export default {
     return {
       drawer: false,
       direction: "rtl",
+      updateType: false,
     };
   },
   methods: {
     show() {
       this.drawer = true;
+    },
+    closeDrawer() {
+      this.drawer = false;
+      this.updateType = !this.updateType;
     },
   },
 };

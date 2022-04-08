@@ -15,3 +15,26 @@ export const getusermaintenance = function (parms) {
         url: '/api/maintenance/getusermaintenance'
     })
 }
+
+// 添加维修类别
+export const addmaintenancetype = function (parms) {
+    return axios.request({
+        url: '/api/maintenance/addmaintenancetype',
+        method: "POST",
+        data: parms.data
+    })
+}
+
+// 获取类别
+export const getmaintenancetypes = function (parms) {
+    return axios.request({
+        url: '/api/maintenance/getmaintenancetypes'
+    })
+}
+// 删除类别
+export const delmaintenancetype = function (parms) {
+    return axios.request({
+        url: `/api/maintenance/delmaintenancetype/${parms.id}`,
+        method: "put"
+    })
+}

@@ -1,5 +1,5 @@
 <template>
-  <div class="service">
+  <div class="service" v-loading="loading">
     <el-form
       :model="ruleForm"
       :rules="rules"
@@ -8,13 +8,17 @@
       class="demo-ruleForm"
     >
       <el-form-item label="维修类型" prop="type">
-        <el-input
-          v-model="ruleForm.type"
-          placeholder="请输入维修类型"
-        ></el-input>
+        <el-select v-model="ruleForm.type" placeholder="请选择维修类别">
+          <el-option
+            v-for="item in types"
+            :key="item.id"
+            :label="`${item.title}`"
+            :value="item.id"
+          ></el-option>
+        </el-select>
       </el-form-item>
       <el-form-item label="维修公寓" prop="roomRelId">
-        <el-select v-model="ruleForm.roomRelId" placeholder="请选择维修类型">
+        <el-select v-model="ruleForm.roomRelId" placeholder="请选择维修公寓">
           <el-option
             v-for="item in rooms"
             :key="item.id"
@@ -29,7 +33,7 @@
       <el-form-item label="维修备注" prop="msg">
         <el-input
           type="textarea"
-          placeholder="填写维修时间等"
+          placeholder="填写维修时间和维修具体信息等"
           v-model="ruleForm.msg"
           maxlength="400"
           show-word-limit="true"
@@ -49,7 +53,7 @@
 import { mapState } from "vuex";
 import { serviceRuleForm, serviceRules } from "@/utils/rules";
 import { toJson } from "@/utils/switch";
-import { addmaintenance } from "@/api/room/maintenance";
+import { addmaintenance, getmaintenancetypes } from "@/api/room/maintenance";
 import form from "@/utils/form";
 import loading from "@/utils/loading";
 export default {
@@ -63,6 +67,8 @@ export default {
     return {
       ruleForm: toJson(serviceRuleForm),
       rules: toJson(serviceRules),
+      types: [],
+      loading: false,
     };
   },
   methods: {
@@ -84,6 +90,16 @@ export default {
         }
       });
     },
+    async gettypes() {
+      this.loading = true;
+      let _result = (await getmaintenancetypes()).data;
+      if (_result.code != 200) this.$message.error(_result.msg);
+      else this.types = _result.data;
+      this.loading = false;
+    },
+  },
+  mounted() {
+    this.gettypes();
   },
 };
 </script>

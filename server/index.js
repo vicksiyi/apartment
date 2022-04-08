@@ -9,6 +9,7 @@ const Upload = require('./routes/upload');
 const Lessee = require('./routes/lessee');
 const User = require('./routes/user');
 const Notice = require('./routes/notice');
+const Maintenance = require('./routes/maintenance');
 
 // // 使用body-parser
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -23,6 +24,7 @@ app.use('/api/upload', Upload);
 app.use('/api/lessee', Lessee);
 app.use('/api/user', User);
 app.use('/api/notice', Notice);
+app.use('/api/maintenance', Maintenance);
 
 app.listen(5000, () => {
     console.log('the server port running');

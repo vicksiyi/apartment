@@ -8,9 +8,19 @@
       class="demo-ruleForm"
     >
       <el-form-item label="维修类型" prop="type">
-        <el-select v-model="ruleForm.type" placeholder="请选择维修类型">
-          <el-option label="区域一" value="shanghai"></el-option>
-          <el-option label="区域二" value="beijing"></el-option>
+        <el-input
+          v-model="ruleForm.type"
+          placeholder="请输入维修类型"
+        ></el-input>
+      </el-form-item>
+      <el-form-item label="维修公寓" prop="roomRelId">
+        <el-select v-model="ruleForm.roomRelId" placeholder="请选择维修类型">
+          <el-option
+            v-for="item in rooms"
+            :key="item.id"
+            :label="`${item.title}-${item.address}`"
+            :value="item.id"
+          ></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="是否紧急" prop="isEmergency">
@@ -28,37 +38,46 @@
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="submitForm('ruleForm')"
-          >立即创建</el-button
+          >提交</el-button
         >
-        <el-button @click="resetForm('ruleForm')">重置</el-button>
       </el-form-item>
     </el-form>
   </div>
 </template>
 
 <script>
+import { mapState } from "vuex";
+import { serviceRuleForm, serviceRules } from "@/utils/rules";
+import { toJson } from "@/utils/switch";
+import { addmaintenance } from "@/api/room/maintenance";
+import form from "@/utils/form";
+import loading from "@/utils/loading";
 export default {
   name: "Service",
+  computed: {
+    ...mapState({
+      rooms: (state) => state.mine.rooms,
+    }),
+  },
   data() {
     return {
-      ruleForm: {
-        type: "",
-        isEmergency: false,
-        msg: "",
-      },
-      rules: {
-        type: [{ required: true, message: "请选择维修类型", trigger: "blur" }],
-        msg: [
-          { required: true, message: "请输入相关备注", trigger: "blur" },
-        ]
-      },
+      ruleForm: toJson(serviceRuleForm),
+      rules: toJson(serviceRules),
     };
   },
   methods: {
     submitForm(formName) {
-      this.$refs[formName].validate((valid) => {
+      form.validate(this, formName).then(async (valid) => {
         if (valid) {
-          alert("submit!");
+          let _loadding = loading.start(this);
+          let data = Object.assign({}, this.ruleForm);
+          let _result = (await addmaintenance({ data: data })).data;
+          if (_result.code != 200) this.$message.error(_result.msg);
+          else {
+            this.ruleForm = toJson(serviceRuleForm);
+            this.$message({ type: "success", message: "成功提交" });
+          }
+          loading.end(_loadding);
         } else {
           console.log("error submit!!");
           return false;

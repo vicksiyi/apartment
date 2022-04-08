@@ -1,10 +1,10 @@
 <template>
   <div class="mine-detail">
-    <el-tabs tab-position="left">
+    <el-tabs @tab-click="tabChange" tab-position="left">
       <el-tab-pane label="租房信息"><Mine></Mine></el-tab-pane>
       <el-tab-pane label="维修报告"><Service></Service></el-tab-pane>
       <el-tab-pane label="维修记录"
-        ><ServiceHistory></ServiceHistory
+        ><ServiceHistory :update="updateServices"></ServiceHistory
       ></el-tab-pane>
       <el-tab-pane label="认证信息"><Auth></Auth></el-tab-pane>
       <el-tab-pane label="修改密码"><EditPassword></EditPassword></el-tab-pane>
@@ -19,13 +19,14 @@ import ServiceHistory from "./Content/ServiceHistory";
 import Auth from "./Content/Auth";
 import EditPassword from "./Content/EditPassword";
 import { getusernotice, doneusernotice } from "@/api/notice/index";
-import form from "@/utils/form";
 import loading from "@/utils/loading";
 export default {
   name: "MineDetail",
   components: { Mine, Service, ServiceHistory, EditPassword, Auth },
   data() {
-    return {};
+    return {
+      updateServices: false,
+    };
   },
   methods: {
     async getNotices() {
@@ -56,6 +57,9 @@ export default {
         this.$message({ type: "success", message: `成功收到 ${title}` });
       }
       loading.end(_loading);
+    },
+    tabChange(res) {
+      if (res.index == "2") this.updateServices = !this.updateServices;
     },
   },
   mounted() {

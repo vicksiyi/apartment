@@ -53,5 +53,18 @@ module.exports = {
         newpasswd: "",
         oldpasswd: "",
         checkpasswd: "",
+    },
+    serviceRuleForm: {
+        type: "",
+        roomRelId: "",
+        isEmergency: false,
+        msg: "",
+    },
+    serviceRules: {
+        type: [{ required: true, message: "请输入维修类型", trigger: "blur" }],
+        roomRelId: [
+            { required: true, message: "请选择维修公寓", trigger: "change" },
+        ],
+        msg: [{ required: true, message: "请输入相关备注", trigger: "blur" }],
     }
 }

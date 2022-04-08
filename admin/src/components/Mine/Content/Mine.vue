@@ -1,6 +1,12 @@
 <template>
   <div class="mine">
-    <el-table :data="rooms" height="500" v-loading="loading" border style="width: 100%">
+    <el-table
+      :data="rooms"
+      height="500"
+      v-loading="loading"
+      border
+      style="width: 100%"
+    >
       <el-table-column prop="title" label="房屋名称" width="180">
       </el-table-column>
       <el-table-column label="租金" width="180">
@@ -40,6 +46,7 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
 import { getuserrooms } from "@/api/room/user_room";
 export default {
   name: "Mine",
@@ -47,9 +54,13 @@ export default {
     return {
       drawer: false,
       direction: "rtl",
-      rooms: [],
       loading: false,
     };
+  },
+  computed: {
+    ...mapState({
+      rooms: (state) => state.mine.rooms,
+    }),
   },
   methods: {
     show() {
@@ -60,7 +71,7 @@ export default {
       let _result = (await getuserrooms()).data;
       if (_result.code != 200) this.$message.error(_result.msg);
       else {
-        this.rooms = _result.data;
+        this.$store.commit("mine/updateRooms", _result.data);
       }
       this.loading = false;
     },

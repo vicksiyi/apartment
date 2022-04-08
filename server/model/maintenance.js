@@ -25,8 +25,21 @@ class Maintenance extends Handle {
         const sql = `select id,title from maintenance_type where status = 1;`;
         return super.commit(sql);
     }
-    del_maintenance_types(id){
+    del_maintenance_types(id) {
         const sql = `update maintenance_type set status = 0 where id = ${id}`;
+        return super.commit(sql);
+    }
+    get_maintenances() {
+        const sql = `select m.id,mt.title,r.address,m.isEmergency,m.time,m.status,m.msg,u.mobile from maintenances m 
+        inner join user_rel_room urr on urr.id = m.room_rel_id
+        inner join rooms r on r.uuid = urr.room_uuid
+        inner join maintenance_type mt on mt.id = m.type_id
+        inner join users u on u.uuid = urr.user_uuid;`;
+        return super.commit(sql);
+    }
+    update_status_maintenance(id, status) {
+        const sql = `update maintenances set status = ${status}
+        where id = ${id}`;
         return super.commit(sql);
     }
 }

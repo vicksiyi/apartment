@@ -38,3 +38,20 @@ export const delmaintenancetype = function (parms) {
         method: "put"
     })
 }
+
+
+// 获取类别
+export const getmaintenances = function () {
+    return axios.request({
+        url: `/api/maintenance/getmaintenances`,
+    })
+}
+
+// 更新状态
+export const actionmaintenances = function (parms) {
+    return axios.request({
+        url: `/api/maintenance/actionmaintenances`,
+        method: "put",
+        data: parms.data
+    })
+}
